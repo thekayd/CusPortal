@@ -1,11 +1,13 @@
-import { Response, Request } from "express";
 require("dotenv").config();
 const cors = require("cors");
 const fs = require("node:fs");
 // import bcrypt from "bcrypt";
 const http = require("http");
-const express = require("express");
+// const express = require("express");
+import express, { Request, Response } from "express";
+import { z } from "zod";
 const path = require("node:path");
+const bcrypt = require("bcrypt");
 const https = require("https");
 const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
@@ -48,7 +50,7 @@ app.use(
   })
 );
 // Serve static files from the Next.js build directory
-app.use(express.static(path.join(__dirname, "../build")));
+// app.use(express.static(path.join(__dirname, "../build"))); // only necessary for production
 
 // Rate limiting
 const limiter = rateLimit({
@@ -58,7 +60,27 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Mock database
-let users = [];
+const userSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+  email: z.string().email({
+    message: "Invalid email format.",
+  }),
+});
+const loginPayload = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+});
+type User = z.infer<typeof userSchema>;
+let users: User[] = [];
 
 // Input validation middleware
 const validateUserInput = [
@@ -70,51 +92,62 @@ const validateUserInput = [
 ];
 
 // Define a route for the root URL
-app.get("/", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+// only necessary for production
+// app.get("/", (req: Request, res: Response) => {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 
 // // Routes
-// app.post('/api/register', validateUserInput, async (req, res) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return res.status(400).json({ errors: errors.array() });
-//   }
+app.post("/api/register", validateUserInput, async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-//   const { username, password, email } = req.body;
+  // Validate & type values via Zod schema
+  const safeUser = userSchema.safeParse({ ...req.body });
+  if (safeUser.error) {
+    return res.status(400).json({ message: safeUser.error.message });
+  }
+  const { username, password, email } = safeUser.data;
 
-//   // Check if user already exists
-//   if (users.find(user => user.username === username)) {
-//     return res.status(400).json({ message: 'User already exists' });
-//   }
+  // Check if user already exists
+  if (users.find((user) => user.username === username)) {
+    return res.status(400).json({ message: "User already exists" });
+  }
 
-//   // Hash password
-//   const salt = await bcrypt.genSalt(10);
-//   const hashedPassword = await bcrypt.hash(password, salt);
+  // Hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
 
-//   // Save user
-//   users.push({ username, password: hashedPassword, email });
+  // Save user
+  users.push({ username, password: hashedPassword, email });
 
-//   res.status(201).json({ message: 'User registered successfully' });
-// });
+  res.status(201).json({ message: "User registered successfully" });
+});
 
-// app.post('/api/login', async (req, res) => {
-//   const { username, password } = req.body;
+app.post("/api/login", async (req, res) => {
+  // Validate & type values via Zod schema
+  const safePayload = loginPayload.safeParse({ ...req.body });
+  if (safePayload.error) {
+    return res.status(400).json({ message: safePayload.error.message });
+  }
+  const { username, password } = safePayload.data;
 
-//   // Find user
-//   const user = users.find(user => user.username === username);
-//   if (!user) {
-//     return res.status(400).json({ message: 'Invalid credentials' });
-//   }
+  // Find user
+  const user = users.find((user) => user.username === username);
+  if (!user) {
+    return res.status(400).json({ message: "Invalid credentials" });
+  }
 
-//   // Check password
-//   const validPassword = await bcrypt.compare(password, user.password);
-//   if (!validPassword) {
-//     return res.status(400).json({ message: 'Invalid credentials' });
-//   }
+  // Check password
+  const validPassword = await bcrypt.compare(password, user.password);
+  if (!validPassword) {
+    return res.status(400).json({ message: "Invalid credentials" });
+  }
 
-//   res.json({ message: 'Logged in successfully' });
-// });
+  res.json({ message: "Logged in successfully" });
+});
 
 // SSL configuration
 const options = {
@@ -122,12 +155,12 @@ const options = {
   cert: fs.readFileSync(SSL_CERT_PATH),
 };
 
-// Start HTTP server
-http.createServer(app).listen(port, () => {
-  console.log(`HTTP Server running on http://${HOST}:${port}`);
-});
+// // Start HTTP server
+// http.createServer(app).listen(port, () => {
+//   console.log(`HTTP Server running on http://${HOST}:${port}`);
+// });
 
-// Start HTTPS server
+// // Start HTTPS server
 https.createServer(options, app).listen(port + 1, () => {
   console.log(`HTTPS Server running on https://${HOST}:${port + 1}`);
 });
