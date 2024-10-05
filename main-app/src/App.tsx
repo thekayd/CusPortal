@@ -14,6 +14,7 @@ function App() {
           <Route path="/" Component={DashboardPage} />
           <Route path="/login" Component={LoginPage} />
           <Route path="/signup" Component={SignUpPage} />
+          {/* <Route path="*" Component={NotFoundPage} /> */}
         </Routes>
       </div>
       <Toaster richColors position="top-center" />

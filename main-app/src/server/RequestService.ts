@@ -18,12 +18,14 @@ async function createUser(user: SignUpForm): Promise<RequestServiceResponse> {
     body: JSON.stringify(user),
   });
   const status = res.status.toString();
-  const message: string = (await res.json()).message || "Something unexpected happened";
+  const message = (await res.json()).message || "Something unexpected happened";
 
   // Handle Error
   if (!res.ok) {
-    // console.log("Error:", res.status, res.statusText);
-    // console.log("Response: ", res);
+    //     console.log("Error:", res.status, res.statusText);
+    //     console.log("Response: ", res);
+    if (message === "Validation failed")
+      throw new Error(`${message} Username must follow requirements. (${status})`);
     throw new Error(`${message} (${status})`);
   }
 

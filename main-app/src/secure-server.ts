@@ -11,7 +11,8 @@ const bcrypt = require("bcrypt");
 const https = require("https");
 const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
-const { body, validationResult } = require("express-validator");
+// const { body, validationResult } = require("express-validator");
+import { body, validationResult } from "express-validator";
 // const { getEnv } = require("./server");
 
 const environmentVars = {
@@ -101,7 +102,7 @@ const validateUserInput = [
 app.post("/api/register", validateUserInput, async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ message: "Validation failed" });
   }
 
   // Validate & type values via Zod schema
