@@ -9,6 +9,7 @@ interface RequestServiceResponse {
   username?: string;
 }
 
+// Handles making fetch request to api server
 async function createUser(user: SignUpForm): Promise<RequestServiceResponse> {
   // Make API Request
   const res = await fetch(`${SERVER_PATH}/api/register`, {
@@ -26,15 +27,9 @@ async function createUser(user: SignUpForm): Promise<RequestServiceResponse> {
 
   // Handle Error
   if (!res.ok) {
-    //     console.log("Error:", res.status, res.statusText);
-    //     console.log("Response: ", res);
-    if (message === "Validation failed")
-      throw new Error(`${message} Username must follow requirements. (${status})`);
     throw new Error(`${message} (${status})`);
   }
 
-  //   console.log(res);
-  //   console.log("Body: ", await res.json());
   return { status: res.status.toString(), message: message };
 }
 
@@ -47,18 +42,15 @@ async function loginUser(user: LoginForm): Promise<RequestServiceResponse> {
     },
     body: JSON.stringify(user),
   });
+
   const status = res.status.toString();
   const message: string = (await res.json()).message || "Something unexpected happened";
 
   // Handle Error
   if (!res.ok) {
-    // console.log("Error:", res.status, res.statusText);
-    // console.log("Response: ", res);
     throw new Error(`${message} (${status})`);
   }
 
-  //   console.log(res);
-  //   console.log("Body: ", await res.json());
   return { status: res.status.toString(), message: message, username: user.username };
 }
 

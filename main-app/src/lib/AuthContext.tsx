@@ -1,5 +1,6 @@
+// Used to store the current user in the app.
+
 import { createContext, useContext, useState } from "react";
-import { toast } from "sonner";
 
 interface AuthContextType {
   logout: () => void;
@@ -19,6 +20,8 @@ export function useAuth() {
   return context;
 }
 
+// Provides the handlers for updating the current user state.
+// This is simple implementation to mic a proper Authentication layer
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<string | null>(null);
 

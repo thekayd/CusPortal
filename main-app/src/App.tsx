@@ -13,7 +13,7 @@ function App() {
         <AuthProvider>
           {/* <header className="App-header"></header> */}
           <Routes>
-            <Route path="/dashboard" Component={DashboardPage} />
+            <Route path="/" Component={DashboardPage} />
             <Route path="/login" Component={LoginPage} />
             <Route path="/signup" Component={SignUpPage} />
             {/* <Route path="*" Component={NotFoundPage} /> */}

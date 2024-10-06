@@ -1,41 +1,23 @@
 require("dotenv").config();
-const cors = require("cors");
-const fs = require("node:fs");
-// import bcrypt from "bcrypt";
-const http = require("http");
-// const express = require("express");
-import express, { Request, Response } from "express";
+import cors from "cors";
+import fs from "node:fs";
 import { z } from "zod";
-const path = require("node:path");
-const bcrypt = require("bcrypt");
-const https = require("https");
-const helmet = require("helmet");
-const { rateLimit } = require("express-rate-limit");
-// const { body, validationResult } = require("express-validator");
+import path from "node:path";
+import bcrypt from "bcrypt";
+import https from "https";
+import helmet from "helmet";
+import express, { Request, Response } from "express";
+import { rateLimit } from "express-rate-limit";
 import { body, matchedData, validationResult } from "express-validator";
-// const { getEnv } = require("./server");
 
-const environmentVars = {
-  PORT: process.env.PORT,
-  JWT_SECRET: process.env.JWT_SECRET,
-  SSL_KEY_PATH: process.env.SSL_KEY_PATH,
-  SSL_CERT_PATH: process.env.SSL_CERT_PATH,
-};
-function getEnv() {
-  if (!environmentVars.JWT_SECRET) {
-    throw new Error("Missing JWT_SECRET environment variable");
-  } else if (!environmentVars.PORT) {
-    throw new Error("Missing PORT environment variable");
-  } else if (!environmentVars.SSL_KEY_PATH) {
-    throw new Error("Missing SSL_KEY_PATH environment variable");
-  } else if (!environmentVars.SSL_CERT_PATH) {
-    throw new Error("Missing SSL_CERT_PATH environment variable");
-  }
-  return environmentVars;
-}
-
+// Providing typesafety, and Validation of Environment Variables
 const HOST = "localhost";
-const { JWT_SECRET, PORT, SSL_CERT_PATH, SSL_KEY_PATH } = getEnv();
+const environmentVars = {
+  PORT: process.env.PORT || "3000",
+  SSL_KEY_PATH: process.env.SSL_KEY_PATH || "",
+  SSL_CERT_PATH: process.env.SSL_CERT_PATH || "",
+};
+const { PORT, SSL_CERT_PATH, SSL_KEY_PATH } = environmentVars;
 
 const app = express();
 const port = parseInt(PORT || "3000");
@@ -51,7 +33,7 @@ app.use(
   })
 );
 // Serve static files from the Next.js build directory
-// app.use(express.static(path.join(__dirname, "../build"))); // only necessary for production
+app.use(express.static(path.join(__dirname, "../build"))); // only necessary for production
 
 // Rate limiting
 const limiter = rateLimit({
@@ -60,7 +42,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Mock database
+// Mock database with Data model schemas
 const userSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -114,20 +96,16 @@ const validateUserInput = [
     .withMessage(
       "Password must be at least 8 characters long, and must require at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
-  // body("password")
-  //   .isLength({ min: 8 })
-  //   .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/)
-  //   .withMessage("Password must be at least 8 characters long"),
 ];
 
-// Define a route for the root URL
-// only necessary for production
-// app.get("/", (req: Request, res: Response) => {
-//   res.sendFile(path.join(__dirname, "build", "index.html"));
-// });
+// Serve the Create-React-App site
+app.get("/*", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "../build", "index.html"));
+});
 
-// // Routes
+// Handles Registration of new users
 app.post("/api/register", validateUserInput, async (req: Request, res: Response) => {
+  // Validate inputs with middleware
   const result = validationResult(req);
   if (!result.isEmpty()) {
     const messages: string[] = result.array().map((error) => error.msg);
@@ -156,6 +134,7 @@ app.post("/api/register", validateUserInput, async (req: Request, res: Response)
   res.status(201).json({ message: "User registered successfully" });
 });
 
+// Handles Login of existing users
 app.post("/api/login", async (req, res) => {
   // Validate & type values via Zod schema
   const safePayload = loginPayload.safeParse({ ...req.body });
@@ -185,10 +164,10 @@ const options = {
   cert: fs.readFileSync(SSL_CERT_PATH),
 };
 
-// // Start HTTP server
-// http.createServer(app).listen(port, () => {
-//   console.log(`HTTP Server running on http://${HOST}:${port}`);
-// });
+// Start HTTPS server
+https.createServer(options, app).listen(port, () => {
+  console.log(`HTTPS Server running on https://${HOST}:${port}`);
+});
 
 // Start HTTPS server
 https.createServer(options, app).listen(port + 1, () => {

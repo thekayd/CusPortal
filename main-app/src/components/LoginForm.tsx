@@ -15,11 +15,12 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
-import { loginUser, RequestServiceResponse } from "../server/RequestService";
+import { loginUser, RequestServiceResponse } from "../lib/RequestService";
 import { Link, Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../lib/AuthContext";
 
+// Form Schema for typesafety and react-hook-form form validation and state management
 export const LoginFormSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -31,20 +32,20 @@ export const LoginFormSchema = z.object({
 export type LoginForm = z.infer<typeof LoginFormSchema>;
 
 export function LoginForm() {
-  const [isAuthed, setIsAuthed] = useState(false);
   const { login } = useAuth();
+  const [isAuthed, setIsAuthed] = useState(false);
+
   const form = useForm<z.infer<typeof LoginFormSchema>>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
-      username: "meatboyed",
-      password: "12345678",
+      username: "",
+      password: "",
     },
   });
 
   function onSubmit(values: LoginForm) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     toast.promise(loginUser(values), {
+      // Executing the loginUser function in RequestService
       loading: "Logging in, please wait 🧑‍🍳...",
       success: (res: RequestServiceResponse) => {
         if (!res.username) return "oops something went wrong. Please try again.";
@@ -75,7 +76,7 @@ export function LoginForm() {
               <FormMessage />
             </FormItem>
           )}
-        />{" "}
+        />
         <FormField
           control={form.control}
           name="password"
