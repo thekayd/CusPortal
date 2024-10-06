@@ -16,8 +16,9 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { loginUser, RequestServiceResponse } from "../server/RequestService";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../lib/AuthContext";
 
 export const LoginFormSchema = z.object({
   username: z.string().min(2, {
@@ -31,6 +32,7 @@ export type LoginForm = z.infer<typeof LoginFormSchema>;
 
 export function LoginForm() {
   const [isAuthed, setIsAuthed] = useState(false);
+  const { login } = useAuth();
   const form = useForm<z.infer<typeof LoginFormSchema>>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
@@ -45,6 +47,8 @@ export function LoginForm() {
     toast.promise(loginUser(values), {
       loading: "Logging in, please wait 🧑‍🍳...",
       success: (res: RequestServiceResponse) => {
+        if (!res.username) return "oops something went wrong. Please try again.";
+        login(res.username);
         setIsAuthed(true);
         return "Yay! 🎉 " + res.message;
       },
@@ -56,7 +60,7 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      {isAuthed && <Navigate to="/" />}
+      {isAuthed && <Navigate to="/dashboard" />}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}

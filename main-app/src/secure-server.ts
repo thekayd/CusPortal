@@ -12,7 +12,7 @@ const https = require("https");
 const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
 // const { body, validationResult } = require("express-validator");
-import { body, validationResult } from "express-validator";
+import { body, matchedData, validationResult } from "express-validator";
 // const { getEnv } = require("./server");
 
 const environmentVars = {
@@ -86,10 +86,38 @@ let users: User[] = [];
 // Input validation middleware
 const validateUserInput = [
   body("username")
-    .matches(/^[a-zA-Z0-9_]+$/)
-    .withMessage("Username can only contain alphanumeric characters and underscores"),
-  body("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters long"),
-  body("email").isEmail().withMessage("Invalid email format"),
+    .notEmpty()
+    .withMessage("Username is required")
+    .isLength({ min: 5, max: 32 })
+    .withMessage("Username must be between 5 and 32 characters")
+    .isString()
+    .withMessage("Username must be a string")
+    .matches(/^[a-zA-Z0-9]+$/) // Only allows alphanumeric characters
+    .withMessage("Username must be alphanumeric and cannot contain spaces or special characters"),
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isLength({ min: 5, max: 32 })
+    .withMessage("Email must be between 5 and 32 characters")
+    .isString()
+    .withMessage("Email must be a string")
+    .isEmail()
+    .withMessage("Invalid email format"),
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters long")
+    .isString()
+    .withMessage("Password must be a string")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/)
+    .withMessage(
+      "Password must be at least 8 characters long, and must require at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ),
+  // body("password")
+  //   .isLength({ min: 8 })
+  //   .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/)
+  //   .withMessage("Password must be at least 8 characters long"),
 ];
 
 // Define a route for the root URL
@@ -100,13 +128,14 @@ const validateUserInput = [
 
 // // Routes
 app.post("/api/register", validateUserInput, async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ message: "Validation failed" });
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    const messages: string[] = result.array().map((error) => error.msg);
+    return res.status(400).json({ message: messages.join(", ") });
   }
 
   // Validate & type values via Zod schema
-  const safeUser = userSchema.safeParse({ ...req.body });
+  const safeUser = userSchema.safeParse(matchedData(req));
   if (safeUser.error) {
     return res.status(400).json({ message: safeUser.error.message });
   }
@@ -161,7 +190,7 @@ const options = {
 //   console.log(`HTTP Server running on http://${HOST}:${port}`);
 // });
 
-// // Start HTTPS server
+// Start HTTPS server
 https.createServer(options, app).listen(port + 1, () => {
   console.log(`HTTPS Server running on https://${HOST}:${port + 1}`);
 });

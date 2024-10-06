@@ -6,6 +6,7 @@ const SERVER_PATH = "https://localhost:3001";
 interface RequestServiceResponse {
   status: string;
   message: string;
+  username?: string;
 }
 
 async function createUser(user: SignUpForm): Promise<RequestServiceResponse> {
@@ -19,6 +20,9 @@ async function createUser(user: SignUpForm): Promise<RequestServiceResponse> {
   });
   const status = res.status.toString();
   const message = (await res.json()).message || "Something unexpected happened";
+
+  console.log("Request Service: Server Response: ", res);
+  console.log("Request Service: Response Message: ", message);
 
   // Handle Error
   if (!res.ok) {
@@ -55,7 +59,7 @@ async function loginUser(user: LoginForm): Promise<RequestServiceResponse> {
 
   //   console.log(res);
   //   console.log("Body: ", await res.json());
-  return { status: res.status.toString(), message: message };
+  return { status: res.status.toString(), message: message, username: user.username };
 }
 
 export { createUser, type RequestServiceResponse, loginUser };

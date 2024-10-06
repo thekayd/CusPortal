@@ -16,8 +16,16 @@ export function SignUpPage() {
         <CardTitle className="text-xl">Sign Up</CardTitle>
         <CardDescription>Enter your information to create an account</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <SignUpForm />
+        <div>
+          <p className="text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link className="underline underline-offset-4" to="/login">
+              Login
+            </Link>
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
@@ -30,8 +38,16 @@ export function LoginPage() {
         <CardTitle className="text-xl">Login</CardTitle>
         <CardDescription>Enter your information to login to your account</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <LoginForm />
+        <div>
+          <p className="text-center text-sm text-muted-foreground">
+            Don't have an account?{" "}
+            <Link className="underline underline-offset-4" to="/signup">
+              Sign Up
+            </Link>
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
