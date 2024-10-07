@@ -53,6 +53,15 @@ const userSchema = z.object({
   email: z.string().email({
     message: "Invalid email format.",
   }),
+  fullName: z.string().min(2, {
+    message: "Full name must be at least 2 characters.",
+  }),
+  idNumber: z.string().regex(/^\d{13}$/, {
+    message: "ID number must be 13 digits.",
+  }),
+  accountNumber: z.string().regex(/^\d{10}$/, {
+    message: "Account number must be 10 digits.",
+  }),
 });
 const loginPayload = z.object({
   username: z.string().min(2, {
@@ -60,6 +69,9 @@ const loginPayload = z.object({
   }),
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
+  }),
+  accountNumber: z.string().regex(/^\d{10}$/, {
+    message: "Account number must be 10 digits.",
   }),
 });
 type User = z.infer<typeof userSchema>;
@@ -96,6 +108,27 @@ const validateUserInput = [
     .withMessage(
       "Password must be at least 8 characters long, and must require at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
+  body("fullName")
+    .notEmpty()
+    .withMessage("Full name is required")
+    .isLength({ min: 2, max: 100 })
+    .withMessage("Full name must be between 2 and 100 characters")
+    .isString()
+    .withMessage("Full name must be a string"),
+  body("idNumber")
+    .notEmpty()
+    .withMessage("ID number is required")
+    .isLength({ min: 13, max: 13 })
+    .withMessage("ID number must be exactly 13 digits")
+    .isNumeric()
+    .withMessage("ID number must contain only digits"),
+  body("accountNumber")
+    .notEmpty()
+    .withMessage("Account number is required")
+    .isLength({ min: 10, max: 10 })
+    .withMessage("Account number must be exactly 10 digits")
+    .isNumeric()
+    .withMessage("Account number must contain only digits"),
 ];
 
 // Serve the Create-React-App site
@@ -117,7 +150,7 @@ app.post("/api/register", validateUserInput, async (req: Request, res: Response)
   if (safeUser.error) {
     return res.status(400).json({ message: safeUser.error.message });
   }
-  const { username, password, email } = safeUser.data;
+  const { username, password, email, fullName, idNumber, accountNumber } = safeUser.data;
 
   // Check if user already exists
   if (users.find((user) => user.username === username)) {
@@ -129,7 +162,7 @@ app.post("/api/register", validateUserInput, async (req: Request, res: Response)
   const hashedPassword = await bcrypt.hash(password, salt);
 
   // Save user
-  users.push({ username, password: hashedPassword, email });
+  users.push({ username, password: hashedPassword, email, fullName, idNumber, accountNumber });
 
   res.status(201).json({ message: "User registered successfully" });
 });
@@ -141,10 +174,10 @@ app.post("/api/login", async (req, res) => {
   if (safePayload.error) {
     return res.status(400).json({ message: safePayload.error.message });
   }
-  const { username, password } = safePayload.data;
+  const { username, password, accountNumber } = safePayload.data;
 
   // Find user
-  const user = users.find((user) => user.username === username);
+  const user = users.find((user) => user.username === username && user.accountNumber === accountNumber);
   if (!user) {
     return res.status(400).json({ message: "Invalid credentials" });
   }
@@ -165,12 +198,6 @@ const options = {
 };
 
 // Start HTTPS server
-// https.createServer(options, app).listen(port, () => {
-//   console.log(`HTTPS Server running on https://${HOST}:${port}`);
-// });
-
-// Start HTTPS server
 https.createServer(options, app).listen(port + 1, () => {
   console.log(`HTTPS Server running on https://${HOST}:${port + 1}`);
 });
-// Madrhino$s128
