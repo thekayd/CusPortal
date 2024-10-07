@@ -1,5 +1,5 @@
 import { LoginForm } from "../components/LoginForm";
-import { SignUpForm } from "../components/SignUpForm";
+import { SignUpFormData  } from "../components/SignUpForm";
 
 const SERVER_PATH = "https://localhost:3001";
 
@@ -10,7 +10,7 @@ interface RequestServiceResponse {
 }
 
 // Handles making fetch request to api server
-async function createUser(user: SignUpForm): Promise<RequestServiceResponse> {
+async function createUser(user: SignUpFormData ): Promise<RequestServiceResponse> {
   // Make API Request
   const res = await fetch(`${SERVER_PATH}/api/register`, {
     method: "POST",
