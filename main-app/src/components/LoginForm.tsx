@@ -44,24 +44,25 @@ export function LoginForm() {
   });
 
   function onSubmit(values: LoginForm) {
-    toast.promise(loginUser(values), {
-      // Executing the loginUser function in RequestService
-      loading: "Logging in, please wait 🧑‍🍳...",
-      success: (res: RequestServiceResponse) => {
-        if (!res.username) return "oops something went wrong. Please try again.";
-        login(res.username);
-        setIsAuthed(true);
-        return "Yay! 🎉 " + res.message;
-      },
-      error: (res: Error) => {
-        return "Oops 🫢" + res.message + "\nPlease try again.";
-      },
-    });
+    // toast.promise(loginUser(values), {
+    //   // Executing the loginUser function in RequestService
+    //   loading: "Logging in, please wait 🧑‍🍳...",
+    //   success: (res: RequestServiceResponse) => {
+    //     if (!res.username) return "oops something went wrong. Please try again.";
+    //     login(res.username);
+    //     setIsAuthed(true);
+    //     return "Yay! 🎉 " + res.message;
+    //   },
+    //   error: (res: Error) => {
+    //     return "Oops 🫢" + res.message + "\nPlease try again.";
+    //   },
+    // });
+    setIsAuthed(true);
   }
 
   return (
     <Form {...form}>
-      {isAuthed && <Navigate to="/dashboard" />}
+      {isAuthed && <Navigate to={`/?username=${form.getValues("username")}`} />}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}

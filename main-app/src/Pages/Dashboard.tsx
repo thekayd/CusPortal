@@ -1,20 +1,28 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../lib/AuthContext";
+import useQuery from "../lib/useQuery";
+import { useState } from "react";
+import { Button } from "../components/ui/button";
 
 export default function DashboardPage() {
-  const { currentUser, logout } = useAuth();
+  const [signOut, setSignOut] = useState(false);
+  const query = useQuery();
+  const username = query.get("username");
+  if (!username) return <Navigate to="/signup" />;
+  // const { currentUser, logout } = useAuth();
+  // console.log("Current User: ", currentUser);
   return (
     <div className="min-h-screen  py-6 flex flex-col justify-center sm:py-12">
       {/* Redirect user if they're not authenticated */}
-      {!currentUser && <Navigate to="/signup" />}
+      {/* {!currentUser && <Navigate to="/signup" />} */}
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <div className="max-w-md mx-auto">
             <div>
-              <h1 className="text-2xl font-semibold">Welcome {currentUser} to Your Dashboard</h1>
+              <h1 className="text-2xl font-semibold">Welcome {username}, to Your Dashboard</h1>
             </div>
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-gray-200 space-y-10">
               <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                 <p>This is where you can manage your international payments.</p>
                 <ul className="list-disc space-y-2">
@@ -77,7 +85,8 @@ export default function DashboardPage() {
                   </a>
                 </p>
               </div>
-              <button onClick={logout}>Sign out</button>
+              <Button onClick={() => setSignOut(true)}>Sign out</Button>
+              {signOut && <Navigate to="/signup" />}
             </div>
           </div>
         </div>

@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(
   cors({
-    origin: `http://${HOST}:${port}`, // or whatever port your React app is running on
+    origin: `https://${HOST}:${port + 1}`,
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -165,11 +165,12 @@ const options = {
 };
 
 // Start HTTPS server
-https.createServer(options, app).listen(port, () => {
-  console.log(`HTTPS Server running on https://${HOST}:${port}`);
-});
+// https.createServer(options, app).listen(port, () => {
+//   console.log(`HTTPS Server running on https://${HOST}:${port}`);
+// });
 
 // Start HTTPS server
 https.createServer(options, app).listen(port + 1, () => {
   console.log(`HTTPS Server running on https://${HOST}:${port + 1}`);
 });
+// Madrhino$s128
