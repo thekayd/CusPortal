@@ -62,7 +62,17 @@ SSL_CERT_PATH=./ssl/certificate.pem
 
 ## How to Run the Application
 
-### Step 1: Build the React Application
+### Automatic
+
+A script has been created in the package.json file - it will build the static React site, and serve the api and site over an https server.
+
+```bash
+npm run build:full
+```
+
+### Manual
+
+#### Step 1: Build the React Application
 
 First, ensure you have built your React application. Navigate to your project directory and run:
 
@@ -72,7 +82,7 @@ npm run build
 
 This command creates an optimized production build of your CRA app in the `build` directory.
 
-### Step 2: Start the HTTPS Server
+#### Step 2: Start the HTTPS Server
 
 After building your application, you can start the HTTPS server. Run the following command:
 
