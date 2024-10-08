@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Setup Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '18'
     - name: Install dependencies
       run: npm ci
     - name: Run npm audit
@@ -31,11 +31,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Setup Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '18'
     - name: Install dependencies
       run: npm ci
     - name: Run ESLint
@@ -48,9 +48,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Run OWASP ZAP Scan
-      uses: zaproxy/action-baseline@v0.6.1
+      uses: zaproxy/action-full-scan@v0.7.0
       with:
         target: 'https://localhost:3001'
 
@@ -59,11 +59,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Setup Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
     - name: Install dependencies
       run: npm ci
     - name: Run database connection test
@@ -77,15 +77,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Setup Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '18'
     - name: Install dependencies
       run: npm ci
     - name: Build application
       run: npm run build
-    # Add your deployment steps here
     - name: Deploy to production
-      run: echo "Deploying to production..."
+      run: |
+        echo "Deploying to production..."
+        # Add your actual deployment commands here
