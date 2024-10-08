@@ -1,4 +1,5 @@
 require('dotenv').config();  // Make sure this is at the top
+console.log(process.env.MONGODB_URI);
 
 if (typeof TextEncoder === 'undefined') {
   global.TextEncoder = require('util').TextEncoder;  // Using Node.js built-in TextEncoder
@@ -12,6 +13,7 @@ const mongoose = require('mongoose');
 
 describe('Database Connection', () => {
   beforeAll(async () => {
+    console.log('Connecting to MongoDB URI:', process.env.MONGODB_URI);  // Log to check URI
     try {
       await mongoose.connect(process.env.MONGODB_URI, {
         useNewUrlParser: true,
