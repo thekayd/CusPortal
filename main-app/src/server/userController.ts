@@ -1,10 +1,7 @@
-import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { loginPayload, User, userSchema, validateUserInput } from "./validators";
-
-// Mock database with Data model schemas
-let users: User[] = [];
+import { createUser, findUser, validatePassword } from "../db/mongodb-integration";
 
 const router = Router();
 
@@ -22,21 +19,16 @@ router.post("/register", validateUserInput, async (req: Request, res: Response) 
   if (safeUser.error) {
     return res.status(400).json({ message: safeUser.error.message });
   }
-  const { username, password, email, fullName, idNumber, accountNumber } = safeUser.data;
+  const userData = safeUser.data;
 
-  // Check if user already exists
-  if (users.find((user) => user.username === username)) {
-    return res.status(400).json({ message: "User already exists" });
+  try {
+    // Save user
+    await createUser(userData);
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).json({ message: "Error registering user" });
   }
-
-  // Hash password
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  // Save user
-  users.push({ username, password: hashedPassword, email, fullName, idNumber, accountNumber });
-
-  res.status(201).json({ message: "User registered successfully" });
 });
 
 // Handles Login of existing users
@@ -48,21 +40,24 @@ router.post("/login", async (req, res) => {
   }
   const { username, password, accountNumber } = safePayload.data;
 
-  // Find user
-  const user = users.find(
-    (user) => user.username === username && user.accountNumber === accountNumber
-  );
-  if (!user) {
-    return res.status(400).json({ message: "Invalid credentials" });
-  }
+  try {
+    // Find user
+    const user = await findUser(username, accountNumber);
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
-  // Check password
-  const validPassword = await bcrypt.compare(password, user.password);
-  if (!validPassword) {
-    return res.status(400).json({ message: "Invalid credentials" });
-  }
+    // Check password
+    const validPassword = await validatePassword(user, password);
+    if (!validPassword) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
-  res.json({ message: "Logged in successfully" });
+    res.json({ message: "Logged in successfully" });
+  } catch (error) {
+    console.error('Error logging in:', error);
+    res.status(500).json({ message: "Error logging in" });
+  }
 });
 
 export default router;

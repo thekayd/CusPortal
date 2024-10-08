@@ -8,10 +8,11 @@ import { rateLimit } from "express-rate-limit";
 import getEnv from "./server/secrets";
 import userController from "./server/userController";
 import ExpressBrute from "express-brute";
+import mongoose from 'mongoose';
 
 // Providing typesafety, and Validation of Environment Variables
 const HOST = "localhost";
-const { PORT, SSL_KEY_PATH, SSL_CERT_PATH } = getEnv();
+const { PORT, SSL_KEY_PATH, SSL_CERT_PATH, MONGODB_URI } = getEnv();
 const options = {
   // SSL Config
   key: fs.readFileSync(SSL_KEY_PATH),
@@ -20,6 +21,11 @@ const options = {
 
 const app = express();
 const port = parseInt(PORT || "3000");
+
+// MongoDB connection
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((error) => console.error('MongoDB connection error:', error));
 
 // Middleware
 app.use(express.json()); // for parsing application/json
@@ -63,4 +69,15 @@ app.use("/api", bruteforce.prevent, userController);
 // Start HTTPS server
 https.createServer(options, app).listen(port + 1, () => {
   console.log(`HTTPS Server running on https://${HOST}:${port + 1}`);
+});
+
+process.on('SIGINT', async () => {
+  try {
+    await mongoose.connection.close();
+    console.log('MongoDB connection closed through app termination');
+    process.exit(0);
+  } catch (err) {
+    console.error('Error during graceful shutdown:', err);
+    process.exit(1);
+  }
 });
