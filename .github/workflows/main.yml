@@ -67,6 +67,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Run database connection test
-      run: npm test mainapp/src/tests/database.test.js
+      run: npm test main-app/src/tests/database.test.js
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
