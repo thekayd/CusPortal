@@ -13,7 +13,7 @@ export default function PaymentPage() {
   const query = useQuery();
  
 
- // const queryUsername = query.get("username") || ""; 
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
