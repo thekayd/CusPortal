@@ -52,7 +52,7 @@ jobs:
     - name: Run OWASP ZAP Scan
       uses: zaproxy/action-full-scan@v0.7.0
       with:
-        target: 'https://localhost:3001'
+        target: 'https://localhost:3001'  # Ensure your app is running for the scan
 
   database_test:
     name: Database Connection Test
@@ -70,23 +70,3 @@ jobs:
       run: npm test src/tests/database.test.js
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
-
-  deploy:
-    name: Deploy
-    needs: [security_checks, code_quality, security_scanning, database_test]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-    - name: Install dependencies
-      run: npm ci
-    - name: Build application
-      run: npm run build
-    - name: Deploy to production
-      run: |
-        echo "Deploying to production..."
-        # Add your actual deployment commands here
