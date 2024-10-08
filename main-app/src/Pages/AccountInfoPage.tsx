@@ -9,8 +9,10 @@ export default function AccountInfoPage() {
   const [swiftCode, setSwiftCode] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const query = useQuery();
-  const username = query.get("username");
-   
+
+  const username = query.get("username") || "";
+  if (!username) return <Navigate to="/signup" />;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -44,12 +46,11 @@ export default function AccountInfoPage() {
     } catch (error) {
       console.error("Error submitting account info:", error);
     }
-};
-
+  };
 
   // Redirect after successful submission
   if (submitted) {
-    return <Navigate to={`/dashboard?username=${username}`} replace />
+    return <Navigate to={`/?username=${username}`} />;
   }
 
   return (

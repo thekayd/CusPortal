@@ -3,22 +3,21 @@ import { Navigate } from "react-router-dom";
 import useQuery from "../lib/useQuery";
 import { Button } from "../components/ui/button";
 
-
 export default function PaymentPage() {
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [provider, setProvider] = useState("SWIFT");
-  
+
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
   const query = useQuery();
- 
 
-  const queryUsername = query.get("username") || ""; 
+  const username = query.get("username") || "";
+  if (!username) return <Navigate to="/signup" />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const paymentDetails = {  
+    const paymentDetails = {
       amount: parseFloat(amount),
       currency,
       provider,
@@ -35,7 +34,7 @@ export default function PaymentPage() {
 
       if (response.ok) {
         console.log("Payment details submitted:", paymentDetails);
-        alert("Payment details submitted successfully!"); 
+        alert("Payment details submitted successfully!");
         setPaymentSuccessful(true); // Mark payment as successful
       } else {
         const errorData = await response.json();
@@ -48,7 +47,7 @@ export default function PaymentPage() {
 
   // Redirect to AccountInfoPage if payment is successful
   if (paymentSuccessful) {
-    return <Navigate to="/account-info" replace />;
+    return <Navigate to={`/account-info?username=${username}`} replace />;
   }
 
   return (

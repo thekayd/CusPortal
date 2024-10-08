@@ -63,7 +63,7 @@ export default function DashboardPage() {
               <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
                 <p>Want to make a payment?</p>
                 <p>
-                  <Link to="/payment" className="text-cyan-600 hover:text-cyan-700">
+                  <Link to={`/payment?username=${username}`} className="text-cyan-600 hover:text-cyan-700">
                     Click here to get started &rarr;
                   </Link>
                 </p> {/* Use Link to navigate to the payment page */}
