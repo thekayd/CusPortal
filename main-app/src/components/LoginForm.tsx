@@ -25,6 +25,7 @@ const LoginFormSchema = z.object({
 
 export type LoginForm = z.infer<typeof LoginFormSchema>;
 
+// Ensure this is the only declaration of LoginForm
 export function LoginForm() {
   const { login } = useAuth();
   const [isAuthed, setIsAuthed] = useState(false);
