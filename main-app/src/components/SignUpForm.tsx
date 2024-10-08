@@ -23,9 +23,12 @@ export const SignUpFormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
   idNumber: z.string().regex(/^\d{13}$/, { message: "ID number must be 13 digits." }),
   accountNumber: z.string().regex(/^\d{10}$/, { message: "Account number must be 10 digits." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters." })
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters." })
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
-      message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+      message:
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
     }),
 });
 
@@ -50,10 +53,10 @@ export function SignUpForm() {
       loading: "Creating account, please wait...",
       success: (res: RequestServiceResponse) => {
         setIsAuthed(true);
-        return "Account created successfully!";
+        return res.message + ". Account created successfully!";
       },
       error: (res: Error) => {
-        return "Error creating account. Please try again.";
+        return "Oh no! Something went wrong. " + res.message + "Please try again.";
       },
     });
   }
@@ -137,7 +140,8 @@ export function SignUpForm() {
                 <Input type="password" placeholder="********" {...field} />
               </FormControl>
               <FormDescription>
-                Must contain at least 8 characters, including uppercase, lowercase, number, and special character.
+                Must contain at least 8 characters, including uppercase, lowercase, number, and
+                special character.
               </FormDescription>
               <FormMessage />
             </FormItem>

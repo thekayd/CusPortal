@@ -48,7 +48,7 @@ export function LoginForm() {
         return "Logged in successfully!";
       },
       error: (res: Error) => {
-        return "Login failed. Please try again.";
+        return "Oh no! Something went wrong. " + res.message + "Please try again.";
       },
     });
   }
