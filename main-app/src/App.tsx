@@ -1,10 +1,8 @@
 import "./App.css";
-import React from "react";
-import logo from "./logo.svg";
 import { Toaster } from "sonner";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { DashboardPage, LoginPage, SignUpPage, PaymentPage, AccountInfoPage } from "./Pages";
-import { AuthProvider } from "./lib/AuthContext";
+
 
 function App() {
   return (

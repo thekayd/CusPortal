@@ -8,11 +8,10 @@ export default function PaymentPage() {
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [provider, setProvider] = useState("SWIFT");
-  const [submitted, setSubmitted] = useState(false);
+  
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
-  const { currentUser } = useAuth();
   const query = useQuery();
-  const username = query.get("username");
+ 
 
   const queryUsername = query.get("username") || ""; 
 

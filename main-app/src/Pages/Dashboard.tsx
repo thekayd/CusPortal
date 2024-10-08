@@ -1,5 +1,4 @@
 import { Navigate, Link } from "react-router-dom"; // Import Link from react-router-dom
-import { useAuth } from "../lib/AuthContext";
 import useQuery from "../lib/useQuery";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
