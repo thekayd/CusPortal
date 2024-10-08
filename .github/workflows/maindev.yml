@@ -1,0 +1,45 @@
+name: DevSecOps Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test_pull_request:
+    name: Test Pull Request
+    runs-on: ubuntu-latest
+    steps:
+     - name: Checkout code
+       uses: actions/checkout@v3
+     - name: Setup Node.js
+       uses: actions/setup-node@v3
+       with:
+         node-version: '18'
+     - name: Install dependencies
+       run: npm ci
+       working-directory: main-app  # Set main-app as the working directory
+     - name: Run tests
+       run: npm test
+       working-directory: main-app  # Run tests from main-app
+   
+
+  database_test:
+    name: Database Connection Test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Install dependencies
+      run: npm ci
+      working-directory: main-app  # Set working directory
+    - name: Run database connection test
+      run: npm test src/tests/database.test.js
+      working-directory: main-app  # Set working directory
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
