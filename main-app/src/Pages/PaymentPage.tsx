@@ -9,9 +9,12 @@ export default function PaymentPage() {
   const [currency, setCurrency] = useState("USD");
   const [provider, setProvider] = useState("SWIFT");
   const [submitted, setSubmitted] = useState(false);
+  const [paymentSuccessful, setPaymentSuccessful] = useState(false);
   const { currentUser } = useAuth();
   const query = useQuery();
   const username = query.get("username");
+
+  const queryUsername = query.get("username") || ""; 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +37,7 @@ export default function PaymentPage() {
       if (response.ok) {
         console.log("Payment details submitted:", paymentDetails);
         alert("Payment details submitted successfully!"); 
-        setSubmitted(true); 
+        setPaymentSuccessful(true); // Mark payment as successful
       } else {
         const errorData = await response.json();
         console.error("Payment submission error:", errorData.message);
@@ -44,6 +47,10 @@ export default function PaymentPage() {
     }
   };
 
+  // Redirect to AccountInfoPage if payment is successful
+  if (paymentSuccessful) {
+    return <Navigate to="/account-info" replace />;
+  }
 
   return (
     <div className="min-h-screen py-6 flex flex-col justify-center sm:py-12">
@@ -52,9 +59,7 @@ export default function PaymentPage() {
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <div className="max-w-md mx-auto">
             <div>
-              <h1 className="text-2xl font-semibold">
-                Make a Payment
-              </h1>
+              <h1 className="text-2xl font-semibold">Make a Payment</h1>
             </div>
             <form onSubmit={handleSubmit} className="divide-y divide-gray-200 space-y-10">
               <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
@@ -109,7 +114,7 @@ export default function PaymentPage() {
 
               <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
                 <p>Ready to proceed?</p>
-                <Button type="submit">Submit Payment</Button>
+                <Button type="submit">Next Step</Button>
               </div>
             </form>
           </div>
