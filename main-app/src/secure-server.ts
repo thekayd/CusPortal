@@ -7,6 +7,7 @@ import express, { Request, Response } from "express";
 import { rateLimit } from "express-rate-limit";
 import getEnv from "./server/secrets";
 import userController from "./server/userController";
+import paymentController from "./server/paymentController";
 import ExpressBrute from "express-brute";
 import mongoose from 'mongoose';
 
@@ -65,6 +66,7 @@ app.get("/*", (req: Request, res: Response) => {
 
 // API routes using a controller for clean abstraction
 app.use("/api", bruteforce.prevent, userController);
+app.use('/api', paymentController);
 
 // Start HTTPS server
 https.createServer(options, app).listen(port + 1, () => {
