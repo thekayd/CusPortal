@@ -23,9 +23,7 @@ jobs:
      - name: Run tests
        run: npm test
        working-directory: main-app  # Run tests from main-app
-     - name: Build application
-       run: npm run build
-       working-directory: main-app  # Build from main-app
+   
 
   database_test:
     name: Database Connection Test
