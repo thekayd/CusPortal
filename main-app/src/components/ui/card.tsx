@@ -20,15 +20,18 @@ const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 );
 CardHeader.displayName = "CardHeader";
 
-const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
-  ({ className, ...props }, ref) => (
+const CardTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, children = "Default Title", ...props }, ref) => ( // Default title if none is provided
     <h3
       ref={ref}
       className={cn("text-2xl font-semibold leading-none tracking-tight", className)}
       {...props}
-    />
+    >
+      {children} {/* Ensure children is rendered */}
+    </h3>
   )
 );
+
 CardTitle.displayName = "CardTitle";
 
 const CardDescription = React.forwardRef<
@@ -51,6 +54,8 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
     <div ref={ref} className={cn("flex items-center p-6 pt-0", className)} {...props} />
   )
 );
+
+
 CardFooter.displayName = "CardFooter";
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };

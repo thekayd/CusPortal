@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import useQuery from "../lib/useQuery";
 import { Button } from "../components/ui/button";
-import { useAuth } from "../lib/AuthContext";
+
 
 export default function PaymentPage() {
   const [amount, setAmount] = useState("");
