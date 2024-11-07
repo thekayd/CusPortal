@@ -7,6 +7,7 @@ export default function PaymentPage() {
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [provider, setProvider] = useState("SWIFT");
+  const [accountNumber, setAccountNumber] = useState("");
 
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
   const query = useQuery();
@@ -21,6 +22,7 @@ export default function PaymentPage() {
       amount: parseFloat(amount),
       currency,
       provider,
+      accountNumber
     };
 
     try {
@@ -107,6 +109,20 @@ export default function PaymentPage() {
                     <option value="PayPal">PayPal</option>
                     <option value="Wire Transfer">Wire Transfer</option>
                   </select>
+                </div>
+                <div>
+                  <label htmlFor="accountNumber" className="block text-gray-700">
+                    Account Number
+                  </label>
+                  <input
+                    type="text"
+                    id="accountNumber"
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    placeholder="Enter your account number"
+                    required
+                  />
                 </div>
               </div>
 
