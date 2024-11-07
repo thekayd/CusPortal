@@ -5,6 +5,16 @@ import { createUser, findUser, validatePassword } from "../db/mongodb-integratio
 
 const router = Router();
 
+// GET ALL (Index)
+router.get("/users", async (req: Request, res: Response) => {
+  return;
+});
+
+// GET Specific (Show)
+router.get("/users/:id", async (req: Request, res: Response) => {
+  return;
+});
+
 // Handles Registration of new users
 router.post("/register", validateUserInput, async (req: Request, res: Response) => {
   // Validate inputs with middleware
