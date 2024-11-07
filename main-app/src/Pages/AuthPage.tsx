@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { SignUpForm } from "../components/SignUpForm";
 import { LoginForm } from "../components/LoginForm";
+import { EmployeeSignInForm } from "../components/EmployeeSignInForm";
 
 export function SignUpPage() {
   return (
@@ -12,6 +13,28 @@ export function SignUpPage() {
       </CardHeader>
       <CardContent className="space-y-4">
         <SignUpForm />
+        <div>
+          <p className="text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link className="underline underline-offset-4" to="/login">
+              Login
+            </Link>
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function EmployeeLoginPage() {
+  return (
+    <Card className="mx-auto w-full max-w-md shadow-2xl">
+      <CardHeader>
+        <CardTitle className="text-xl">Sign In</CardTitle>
+        <CardDescription>Enter your Employee Details</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <EmployeeSignInForm />
         <div>
           <p className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}

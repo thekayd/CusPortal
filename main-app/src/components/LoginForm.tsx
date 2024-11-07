@@ -12,9 +12,15 @@ import { LoginUser } from "../services/UserRequest";
 import { UserResponse } from "../server/userController";
 
 const LoginFormSchema = z.object({
-  username: z.string().min(2, { message: "Username must be at least 2 characters." }),
-  accountNumber: z.string().regex(/^\d{10}$/, { message: "Account number must be 10 digits." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
+  username: z
+    .string()
+    .min(2, { message: "Username must be at least 2 characters." }),
+  accountNumber: z
+    .string()
+    .regex(/^\d{10}$/, { message: "Account number must be 10 digits." }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters." }),
 });
 
 export type LoginForm = z.infer<typeof LoginFormSchema>;
@@ -43,7 +49,9 @@ export function LoginForm() {
         return "Logged in successfully!";
       },
       error: (res: Error) => {
-        return "Oh no! Something went wrong. " + res.message + "Please try again.";
+        return (
+          "Oh no! Something went wrong. " + res.message + "Please try again."
+        );
       },
     });
   }
@@ -94,6 +102,12 @@ export function LoginForm() {
         <Button className="w-full" type="submit">
           Login
         </Button>
+        
+        <h2 className="text-center mt-2">
+          <a href="/employee-login" className="text-blue-500">
+            Login As Employee
+          </a>
+        </h2>
       </form>
     </Form>
   );
