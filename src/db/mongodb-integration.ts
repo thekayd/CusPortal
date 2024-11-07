@@ -67,13 +67,14 @@ const paymentSchema = new mongoose.Schema({
   currency: { type: String, required: true },
   provider: { type: String, required: true },
   date: { type: Date, default: Date.now },
+  accountNumber: { type: String, required: true },
 });
 
 // Payment model
 const PaymentModel = mongoose.model('Payment', paymentSchema);
 
 // Function to create a new payment
-export async function createPayment(paymentData: { amount: number; currency: string; provider: string }): Promise<void> {
+export async function createPayment(paymentData: { amount: number; currency: string; provider: string; accountNumber: string }): Promise<void> {
   try {
     const payment = new PaymentModel(paymentData);
     await payment.save();
