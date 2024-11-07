@@ -5,6 +5,16 @@ import { createUser, findUser, validatePassword } from "../db/mongodb-integratio
 
 const router = Router();
 
+// GET ALL (Index)
+router.get("/users", async (req: Request, res: Response) => {
+  return;
+});
+
+// GET Specific (Show)
+router.get("/users/:id", async (req: Request, res: Response) => {
+  return;
+});
+
 // Handles Registration of new users
 router.post("/register", validateUserInput, async (req: Request, res: Response) => {
   // Validate inputs with middleware
@@ -26,7 +36,7 @@ router.post("/register", validateUserInput, async (req: Request, res: Response) 
     await createUser(userData);
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    console.error('Error registering user:', error);
+    console.error("Error registering user:", error);
     res.status(500).json({ message: "Error registering user" });
   }
 });
@@ -55,7 +65,7 @@ router.post("/login", async (req, res) => {
 
     res.json({ message: "Logged in successfully" });
   } catch (error) {
-    console.error('Error logging in:', error);
+    console.error("Error logging in:", error);
     res.status(500).json({ message: "Error logging in" });
   }
 });
