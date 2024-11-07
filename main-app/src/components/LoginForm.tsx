@@ -4,18 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { loginUser, RequestServiceResponse } from "../lib/RequestService";
 import { useAuth } from "../lib/AuthContext";
+import { LoginUser } from "../services/UserRequest";
+import { UserResponse } from "../server/userController";
 
 const LoginFormSchema = z.object({
   username: z.string().min(2, { message: "Username must be at least 2 characters." }),
@@ -40,9 +34,9 @@ export function LoginForm() {
   });
 
   function onSubmit(values: LoginForm) {
-    toast.promise(loginUser(values), {
+    toast.promise(LoginUser(values), {
       loading: "Logging in, please wait...",
-      success: (res: RequestServiceResponse) => {
+      success: (res: UserResponse) => {
         if (!res.username) return "Something went wrong. Please try again.";
         login(res.username);
         setIsAuthed(true);

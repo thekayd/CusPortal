@@ -15,7 +15,8 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { createUser, RequestServiceResponse } from "../lib/RequestService";
+import { RegisterUser } from "../services/UserRequest";
+import { UserResponse } from "../server/userController";
 
 export const SignUpFormSchema = z.object({
   username: z.string().min(2, { message: "Username must be at least 2 characters." }),
@@ -49,9 +50,9 @@ export function SignUpForm() {
   });
 
   function onSubmit(values: SignUpFormData) {
-    toast.promise(createUser(values), {
+    toast.promise(RegisterUser(values), {
       loading: "Creating account, please wait...",
-      success: (res: RequestServiceResponse) => {
+      success: (res: UserResponse) => {
         setIsAuthed(true);
         return res.message + ". Account created successfully!";
       },

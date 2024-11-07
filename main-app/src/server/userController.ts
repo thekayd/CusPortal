@@ -5,6 +5,11 @@ import { createUser, findUser, validatePassword } from "../db/UserModel";
 import { type MongooseError } from "mongoose";
 import { handleServerError } from "./utils";
 
+export interface UserResponse {
+  message: string;
+  username: string;
+}
+
 const router = Router();
 
 // GET ALL (Index)
@@ -37,8 +42,11 @@ router.post("/register", validateUserInput, async (req: Request, res: Response) 
 
   try {
     // Save user
-    await createUser(userData);
-    res.status(201).json({ message: "User registered successfully" });
+    const user = await createUser(userData);
+    res.status(201).json({
+      message: "User registered successfully",
+      username: user.username,
+    } as UserResponse);
     return;
   } catch (error: any) {
     handleServerError(error, res, "users", "register");
@@ -71,7 +79,10 @@ router.post("/login", async (req: Request, res: Response) => {
       return;
     }
 
-    res.json({ message: "Logged in successfully" });
+    res.json({
+      message: "Logged in successfully",
+      username: user.username,
+    } as UserResponse);
   } catch (error) {
     handleServerError(error, res, "users", "login");
     return;
