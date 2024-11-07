@@ -13,29 +13,29 @@ router.post("/payment", async (req: Request, res: Response) => {
     await createPayment({ amount, currency, provider, accountNumber });
     res.status(201).json({ message: "Payment submitted successfully" });
   } catch (error) {
-    console.error('Error submitting payment:', error);
+    console.error("Error submitting payment:", error);
     res.status(500).json({ message: "Error submitting payment" });
   }
 });
 
 // GET ALL (index)
-router.get("/payment", async (req: Request, res: Response) => {
-  return;
-});
+// router.get("/payment", async (req: Request, res: Response) => {
+//   return;
+// });
 
 // CREATE (create)
-router.post("/payment/create", async (req: Request, res: Response) => {
-  return;
-});
+// router.post("/payment/create", async (req: Request, res: Response) => {
+//   return;
+// });
 
 // GET Specific (show)
-router.get("/payment/:id", async (req: Request, res: Response) => {
-  return;
-});
+// router.get("/payment/:id", async (req: Request, res: Response) => {
+//   return;
+// });
 
 // PUT/POST (update)
-router.post("/payment/:id", async (req: Request, res: Response) => {
-  return;
-});
+// router.post("/payment/:id", async (req: Request, res: Response) => {
+//   return;
+// });
 
 export default router;

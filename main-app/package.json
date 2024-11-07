@@ -43,7 +43,6 @@
     "zod": "^3.23.8"
   },
   "scripts": {
-    "dev": "concurrently \"npm run start\" \"npx nodemon --exec 'npm run server'\" ",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

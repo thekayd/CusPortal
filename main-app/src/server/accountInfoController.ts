@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { createAccount } from "../db/mongodb-integration";
+import { handleServerError } from "./utils";
 
 const router = Router();
 
@@ -16,8 +17,8 @@ router.post("/account-info", async (req: Request, res: Response) => {
     await createAccount({ accountNumber, bankName, swiftCode });
     res.status(201).json({ message: "Account information created successfully" });
   } catch (error) {
-    console.error("Error creating account information:", error);
-    res.status(500).json({ message: "Error creating account information" });
+    handleServerError(error, res, "account-info", "create");
+    return;
   }
 });
 

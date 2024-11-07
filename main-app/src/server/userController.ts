@@ -1,7 +1,9 @@
 import { Request, Response, Router } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { loginPayload, User, userSchema, validateUserInput } from "./validators";
-import { createUser, findUser, validatePassword } from "../db/mongodb-integration";
+import { createUser, findUser, validatePassword } from "../db/UserModel";
+import { type MongooseError } from "mongoose";
+import { handleServerError } from "./utils";
 
 const router = Router();
 
@@ -38,9 +40,8 @@ router.post("/register", validateUserInput, async (req: Request, res: Response) 
     await createUser(userData);
     res.status(201).json({ message: "User registered successfully" });
     return;
-  } catch (error) {
-    console.error("Error registering user:", error);
-    res.status(500).json({ message: "Error registering user" });
+  } catch (error: any) {
+    handleServerError(error, res, "users", "register");
     return;
   }
 });
@@ -72,8 +73,8 @@ router.post("/login", async (req: Request, res: Response) => {
 
     res.json({ message: "Logged in successfully" });
   } catch (error) {
-    console.error("Error logging in:", error);
-    res.status(500).json({ message: "Error logging in" });
+    handleServerError(error, res, "users", "login");
+    return;
   }
 });
 
