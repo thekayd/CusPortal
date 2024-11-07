@@ -1,15 +1,17 @@
-interface RequestServiceResponse {
+import { SERVER_PATH } from "./utils";
+
+export interface RequestServiceResponse {
   status: string;
   message: string;
   username?: string;
   empID?: string;
 }
 
-async function verifyEmployeeLogin(values: {
+export async function verifyEmployeeLogin(values: {
   empID: string;
   password: string;
 }): Promise<RequestServiceResponse> {
-  const res = await fetch(`${process.env.SERVER_PATH}/api/employeeLogin`, {
+  const res = await fetch(`${SERVER_PATH}/api/employeeLogin`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -27,8 +29,3 @@ async function verifyEmployeeLogin(values: {
   const data = await res.json();
   return { status: status, message: message, empID: data.empID };
 }
-
-export {
-  // Make API Request
-  verifyEmployeeLogin,
-};

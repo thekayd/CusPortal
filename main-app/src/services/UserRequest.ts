@@ -1,10 +1,11 @@
 import { SignUpFormData } from "../components/SignUpForm";
 import { UserResponse } from "../server/userController";
 import { LoginForm } from "../components/LoginForm";
+import { SERVER_PATH } from "../lib/utils";
 
 export async function RegisterUser(user: SignUpFormData): Promise<UserResponse> {
   // Make API Request
-  const res = await fetch(`${process.env.SERVER_PATH}/api/register`, {
+  const res = await fetch(`${SERVER_PATH}/api/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -27,7 +28,7 @@ export async function RegisterUser(user: SignUpFormData): Promise<UserResponse> 
 
 export async function LoginUser(user: LoginForm): Promise<UserResponse> {
   // Make API Request
-  const res = await fetch(`${process.env.SERVER_PATH}/api/login`, {
+  const res = await fetch(`${SERVER_PATH}/api/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
