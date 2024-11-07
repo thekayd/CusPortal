@@ -17,7 +17,7 @@ const EmployeeModel = mongoose.model('Employee', employeeSchema);
 
 // Employee Data (This will be inserted into the database with hashed passwords)
 const employees = [
-  { name: 'Jane Smith', empID: '001', email: 'jane@example.com', password: 'test@01' },
+  { name: 'Jane Smith', empID: '001', email: 'jane@example.com', password: 'test@011' },
   { name: 'Tim Monty', empID: '002', email: 'tim@example.com', password: 'test@01' },
   { name: 'Ruth Nell', empID: '003', email: 'ruth@example.com', password: 'test@01' },
 ];
