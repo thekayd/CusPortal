@@ -21,13 +21,15 @@ router.post("/register", validateUserInput, async (req: Request, res: Response) 
   const result = validationResult(req);
   if (!result.isEmpty()) {
     const messages: string[] = result.array().map((error) => error.msg);
-    return res.status(400).json({ message: messages.join(", ") });
+    res.status(400).json({ message: messages.join(", ") });
+    return;
   }
 
   // Validate & type values via Zod schema
   const safeUser = userSchema.safeParse(matchedData(req));
   if (safeUser.error) {
-    return res.status(400).json({ message: safeUser.error.message });
+    res.status(400).json({ message: safeUser.error.message });
+    return;
   }
   const userData = safeUser.data;
 
@@ -35,18 +37,21 @@ router.post("/register", validateUserInput, async (req: Request, res: Response) 
     // Save user
     await createUser(userData);
     res.status(201).json({ message: "User registered successfully" });
+    return;
   } catch (error) {
-    console.error('Error registering user:', error);
+    console.error("Error registering user:", error);
     res.status(500).json({ message: "Error registering user" });
+    return;
   }
 });
 
 // Handles Login of existing users
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: Request, res: Response) => {
   // Validate & type values via Zod schema
   const safePayload = loginPayload.safeParse({ ...req.body });
   if (safePayload.error) {
-    return res.status(400).json({ message: safePayload.error.message });
+    res.status(400).json({ message: safePayload.error.message });
+    return;
   }
   const { username, password, accountNumber } = safePayload.data;
 
@@ -54,18 +59,20 @@ router.post("/login", async (req, res) => {
     // Find user
     const user = await findUser(username, accountNumber);
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
     }
 
     // Check password
     const validPassword = await validatePassword(user, password);
     if (!validPassword) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
     }
 
     res.json({ message: "Logged in successfully" });
   } catch (error) {
-    console.error('Error logging in:', error);
+    console.error("Error logging in:", error);
     res.status(500).json({ message: "Error logging in" });
   }
 });

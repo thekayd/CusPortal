@@ -8,15 +8,16 @@ router.post("/account-info", async (req: Request, res: Response) => {
   const { accountNumber, bankName, swiftCode } = req.body;
 
   if (!accountNumber || !bankName || !swiftCode) {
-    return res.status(400).json({ message: "All fields are required" });
+    res.status(400).json({ message: "All fields are required" });
+    return;
   }
 
   try {
     await createAccount({ accountNumber, bankName, swiftCode });
-    return res.status(201).json({ message: "Account information created successfully" });
+    res.status(201).json({ message: "Account information created successfully" });
   } catch (error) {
-    console.error('Error creating account information:', error);
-    return res.status(500).json({ message: "Error creating account information" });
+    console.error("Error creating account information:", error);
+    res.status(500).json({ message: "Error creating account information" });
   }
 });
 
