@@ -56,7 +56,7 @@ export function SignUpForm() {
         return res.message + ". Account created successfully!";
       },
       error: (res: Error) => {
-        return "Oh no! Something went wrong. " + res.message + "Please try again.";
+        return "Oh no! Something went wrong. " + res.message + ". Please try again.";
       },
     });
   }

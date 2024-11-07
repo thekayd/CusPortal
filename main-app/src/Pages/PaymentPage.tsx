@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import useQuery from "../lib/useQuery";
 import { Button } from "../components/ui/button";
+import { SERVER_PATH } from "../lib/RequestService";
 
 export default function PaymentPage() {
   const [amount, setAmount] = useState("");
@@ -22,11 +23,11 @@ export default function PaymentPage() {
       amount: parseFloat(amount),
       currency,
       provider,
-      accountNumber
+      accountNumber,
     };
 
     try {
-      const response = await fetch("/api/payment", {
+      const response = await fetch(`${SERVER_PATH}/api/payment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

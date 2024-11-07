@@ -35,7 +35,7 @@ app.use(express.json()); // for parsing application/json
 app.use(helmet()); // for security
 app.use(
   cors({
-    origin: `https://${HOST}:${port + 1}`, // Ensuring it only allows request from the same origin (Prevents )
+    origin: `http://${HOST}:${port}`, // Ensuring it only allows request from the same origin (Prevents )
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     optionsSuccessStatus: 200,
