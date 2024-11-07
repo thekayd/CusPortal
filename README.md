@@ -1,13 +1,5 @@
 # Project README
 
-## Team Members
-
-1.	Vaughn Hay (ST10044023, Group 2),
-2.	Lebohang Makgatho (ST10050571, Group 2),
-3.	Joel Shaduka (ST10041239, Group 1),
-4.	Kayode Daniel Akilo (ST10203137, Group 3),
-5.	Donna Peter (ST10186589, Group 3).
-
 ## Overview
 
 This project is a secure web application built using **Create React App (CRA)** with TypeScript. It serves a production-ready version of the application over HTTPS, ensuring secure communication between the client and server. The application includes features for user registration and login, with input validation and security measures in place to protect sensitive data.
