@@ -9,6 +9,8 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { verifyEmployeeLogin, RequestServiceResponse } from "../lib/RequestService";
 import { useAuth } from "../lib/AuthContext";
+import { LoginEmployee } from "../services/EmployeeRequest";
+import { EmployeeResponse } from "../server/employeeController";
 
 export const EmployeeLoginFormSchema = z.object({
   empID: z.string().min(3, { message: "Employee ID is required." }),
@@ -30,11 +32,11 @@ export function EmployeeSignInForm() {
   });
 
   function onSubmit(values: EmployeeLoginForm) {
-    toast.promise(verifyEmployeeLogin(values), {
+    toast.promise(LoginEmployee(values), {
       loading: "Logging in as Employee, please wait...",
-      success: (res: RequestServiceResponse) => {
-        if (!res.empID) return "Login failed. Please check your credentials.";
-        login(res.empID);
+      success: (res: EmployeeResponse) => {
+        if (!res.employee?.empID) return "Login failed. Please check your credentials.";
+        login(res.employee.empID);
         setIsAuthed(true);
         return "Logged in successfully!";
       },
