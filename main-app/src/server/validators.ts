@@ -1,4 +1,3 @@
-
 import { body } from "express-validator";
 import { z } from "zod";
 
@@ -17,13 +16,10 @@ const userSchema = z.object({
     .min(8, {
       message: "Password must be at least 8 characters.",
     })
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/,
-      {
-        message:
-          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
-      }
-    ),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/, {
+      message:
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+    }),
   email: z
     .string()
     .email({
@@ -63,27 +59,47 @@ const loginPayload = z.object({
     .min(8, {
       message: "Password must be at least 8 characters.",
     })
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/,
-      {
-        message:
-          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
-      }
-    ),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/, {
+      message:
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+    }),
   accountNumber: z.string().regex(/^\d{10}$/, {
     message: "Account number must be 10 digits.",
   }),
 });
 
+// Employee
+export const employeeSchema = z.object({
+  name: z
+    .string()
+    .min(2, {
+      message: "Full name must be at least 2 characters.",
+    })
+    .regex(/^[a-zA-Z\s]+$/, {
+      message: "Full name must contain only letters and spaces.",
+    }),
+  empID: z.string(), // TODO: Add EmployeeID Validation
+  email: z
+    .string()
+    .email({
+      message: "Invalid email format.",
+    })
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
+      message: "Invalid email format.",
+    }),
+  password: z
+    .string()
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/, {
+      message: "Invalid password format",
+    }),
+});
+export type Employee = z.infer<typeof employeeSchema>;
+
 const paymentSchema = z.object({
   amount: z.number().positive(),
   currency: z.enum(["USD", "EUR", "GBP", "ZAR"]),
-  accountNumber: z
-    .string()
-    .regex(/^\d{10}$/, "Account number must be 10 digits"),
-  swiftCode: z
-    .string()
-    .regex(/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/, "Invalid SWIFT code"),
+  accountNumber: z.string().regex(/^\d{10}$/, "Account number must be 10 digits"),
+  swiftCode: z.string().regex(/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/, "Invalid SWIFT code"),
 });
 
 // Input validation middleware
@@ -96,9 +112,7 @@ const validateUserInput = [
     .isString()
     .withMessage("Username must be a string")
     .matches(/^[a-zA-Z0-9]+$/)
-    .withMessage(
-      "Username must be alphanumeric and cannot contain spaces or special characters"
-    ),
+    .withMessage("Username must be alphanumeric and cannot contain spaces or special characters"),
   body("email")
     .notEmpty()
     .withMessage("Email is required")
@@ -117,9 +131,7 @@ const validateUserInput = [
     .withMessage("Password must be at least 8 characters long")
     .isString()
     .withMessage("Password must be a string")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/
-    )
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/)
     .withMessage(
       "Password must be at least 8 characters long, and must require at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
@@ -152,11 +164,4 @@ const validateUserInput = [
     .withMessage("Account number must be exactly 10 digits"),
 ];
 
-export {
-  validateUserInput,
-  userSchema,
-  loginPayload,
-  paymentSchema,
-  type User,
-};
-
+export { validateUserInput, userSchema, loginPayload, paymentSchema, type User };

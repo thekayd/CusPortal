@@ -10,7 +10,7 @@ import { Button } from "./ui/button";
 import { verifyEmployeeLogin, RequestServiceResponse } from "../lib/RequestService";
 import { useAuth } from "../lib/AuthContext";
 
-const EmployeeLoginFormSchema = z.object({
+export const EmployeeLoginFormSchema = z.object({
   empID: z.string().min(3, { message: "Employee ID is required." }),
   password: z.string().min(8, { message: "Password must be at least 8 characters." }),
 });
@@ -41,7 +41,6 @@ export function EmployeeSignInForm() {
       error: (error: Error) => `Error: ${error.message}. Please try again.`,
     });
   }
-  
 
   return (
     <Form {...form}>
@@ -80,5 +79,3 @@ export function EmployeeSignInForm() {
     </Form>
   );
 }
-
-

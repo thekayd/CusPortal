@@ -35,9 +35,14 @@ export async function createUser(userData: User): Promise<User> {
 }
 
 // Function to find a user by username and account number
-export async function findUser(username: string, accountNumber: string): Promise<User | null> {
+export async function SelectUser(selectPayload: Partial<User>): Promise<User> {
   try {
-    return await UserModel.findOne({ username, accountNumber });
+    const user = await UserModel.findOne({ ...selectPayload });
+    if (!user) {
+      throw new Error("404 on Select User");
+    }
+
+    return { ...user };
   } catch (error) {
     console.error("Error finding user:", error);
     throw error;

@@ -1,13 +1,16 @@
 import { Request, Response, Router } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { loginPayload, User, userSchema, validateUserInput } from "./validators";
-import { createUser, findUser, validatePassword } from "../db/UserModel";
+import { createUser, SelectUser, validatePassword } from "../db/UserModel";
 import { type MongooseError } from "mongoose";
 import { handleServerError } from "./utils";
+
+const CONTROLLER = "User" as const;
 
 export interface UserResponse {
   message: string;
   username: string;
+  user?: User;
 }
 
 const router = Router();
@@ -18,8 +21,20 @@ router.get("/users", async (req: Request, res: Response) => {
 });
 
 // GET Specific (Show)
-router.get("/users/:id", async (req: Request, res: Response) => {
-  return;
+router.get("/users/:username", async (req: Request, res: Response) => {
+  const username = req.params.username;
+  if (!username) {
+    res.status(400).json({ message: "No username provided" });
+    return;
+  }
+
+  try {
+    const user = await SelectUser({ username });
+    res.json({ message: "User found", username: username, user: user } as UserResponse);
+  } catch (error) {
+    handleServerError(error, res, CONTROLLER, "show");
+    return;
+  }
 });
 
 // Handles Registration of new users
@@ -49,7 +64,7 @@ router.post("/register", validateUserInput, async (req: Request, res: Response) 
     } as UserResponse);
     return;
   } catch (error: any) {
-    handleServerError(error, res, "users", "register");
+    handleServerError(error, res, CONTROLLER, "register");
     return;
   }
 });
@@ -66,7 +81,7 @@ router.post("/login", async (req: Request, res: Response) => {
 
   try {
     // Find user
-    const user = await findUser(username, accountNumber);
+    const user = await SelectUser({ username, accountNumber });
     if (!user) {
       res.status(400).json({ message: "Invalid credentials" });
       return;
@@ -84,7 +99,7 @@ router.post("/login", async (req: Request, res: Response) => {
       username: user.username,
     } as UserResponse);
   } catch (error) {
-    handleServerError(error, res, "users", "login");
+    handleServerError(error, res, CONTROLLER, "login");
     return;
   }
 });

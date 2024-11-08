@@ -4,6 +4,8 @@ import { handleServerError } from "./utils";
 
 const router = Router();
 
+// Endpoint for SHOW
+
 // Controller function to handle account information creation
 router.post("/account-info", async (req: Request, res: Response) => {
   const { accountNumber, bankName, swiftCode } = req.body;
