@@ -35,8 +35,7 @@ export async function InsertEmployee(employee: Employee) {
     await newEmployee.save();
     console.log("Employee added:", newEmployee);
   } catch (error) {
-    console.error("Error creating user:", error);
-    throw error;
+    throw handleMongoError(error, MODEL, "Insert");
   }
 }
 

@@ -169,4 +169,4 @@ const validateUserInput = [
     .withMessage("Account number must be exactly 10 digits"),
 ];
 
-export { validateUserInput, userSchema, loginPayload, paymentSchema, type User };
+export { validateUserInput, userSchema, loginPayload, type User };

@@ -2,10 +2,14 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import useQuery from "../lib/useQuery";
 import { Button } from "../components/ui/button";
+import { toast } from "sonner";
+import { Currencies } from "../db/PaymentModel";
+import { PaymentResponse } from "../server/paymentController";
+import { CreatePayment } from "../services/PaymentsRequest";
 
 export default function PaymentPage() {
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState<Currencies>("USD");
   const [provider, setProvider] = useState("SWIFT");
   const [accountNumber, setAccountNumber] = useState("");
 
@@ -25,26 +29,18 @@ export default function PaymentPage() {
       accountNumber,
     };
 
-    try {
-      const response = await fetch(`${process.env.SERVER_PATH}/api/payment`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(paymentDetails),
-      });
-
-      if (response.ok) {
-        console.log("Payment details submitted:", paymentDetails);
-        alert("Payment details submitted successfully!");
-        setPaymentSuccessful(true); // Mark payment as successful
-      } else {
-        const errorData = await response.json();
-        console.error("Payment submission error:", errorData.message);
-      }
-    } catch (error) {
-      console.error("Error submitting payment:", error);
-    }
+    toast.promise(CreatePayment(paymentDetails), {
+      loading: "Payment is being processed",
+      success: (res: PaymentResponse) => {
+        console.log("Payment Response: ", res);
+        setPaymentSuccessful(true);
+        return "Payment successfully made!";
+      },
+      error: (error: Error) => {
+        console.log("Payment Error: ", error);
+        return `Error: ${error.message}. Please try again.`;
+      },
+    });
   };
 
   // Redirect to AccountInfoPage if payment is successful
@@ -85,7 +81,7 @@ export default function PaymentPage() {
                   <select
                     id="currency"
                     value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
+                    onChange={(e) => setCurrency(e.target.value as Currencies)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   >
                     <option value="USD">USD</option>

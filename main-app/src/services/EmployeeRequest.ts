@@ -4,7 +4,7 @@ import { EmployeeResponse } from "../server/employeeController";
 
 export async function LoginEmployee(payload: EmployeeLoginForm): Promise<EmployeeResponse> {
   // Make API Request
-  const res = await fetch(`${SERVER_PATH}/api/employee/login`, {
+  const res = await fetch(`${SERVER_PATH}/api/payment/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
