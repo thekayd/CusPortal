@@ -1,9 +1,8 @@
 import { Request, Response, Router } from "express";
 import { matchedData, validationResult } from "express-validator";
 import { loginPayload, User, userSchema, validateUserInput } from "./validators";
-import { createUser, SelectUser, validatePassword } from "../db/UserModel";
-import { type MongooseError } from "mongoose";
-import { handleServerError } from "./utils";
+import { createUser, SelectUser } from "../db/UserModel";
+import { handleServerError, validatePassword } from "./utils";
 
 const CONTROLLER = "User" as const;
 
@@ -88,7 +87,7 @@ router.post("/login", async (req: Request, res: Response) => {
     }
 
     // Check password
-    const validPassword = await validatePassword(user, password);
+    const validPassword = await validatePassword(user.password, password);
     if (!validPassword) {
       res.status(400).json({ message: "Invalid credentials" });
       return;

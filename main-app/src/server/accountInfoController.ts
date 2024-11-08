@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
-import { createAccount } from "../db/mongodb-integration";
 import { handleServerError } from "./utils";
+import { createAccount } from "../db/AccountModel";
 
 const router = Router();
 

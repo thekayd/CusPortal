@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { createPayment } from "../db/mongodb-integration";
+import { createPayment } from "../db/PaymentModel";
 
 const router = Router();
 

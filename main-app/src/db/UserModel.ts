@@ -48,8 +48,3 @@ export async function SelectUser(selectPayload: Partial<User>): Promise<User> {
     throw error;
   }
 }
-
-// Function to validate user password
-export async function validatePassword(user: User, password: string): Promise<boolean> {
-  return await bcrypt.compare(password, user.password);
-}

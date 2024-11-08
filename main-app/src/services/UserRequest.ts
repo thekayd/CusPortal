@@ -3,6 +3,25 @@ import { UserResponse } from "../server/userController";
 import { LoginForm } from "../components/LoginForm";
 import { SERVER_PATH } from "../lib/utils";
 
+export async function ShowUser(username: string): Promise<UserResponse> {
+  // Make API Request
+  const res = await fetch(`${SERVER_PATH}/api/users/${username}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const status = res.status;
+  const data = (await res.json()) as UserResponse;
+
+  // Handle Error
+  if (!res.ok || !data.username || !data.user) {
+    throw new Error(`${data.message || "Something unexpected happened"} (${status})`);
+  }
+
+  return data;
+}
+
 export async function RegisterUser(user: SignUpFormData): Promise<UserResponse> {
   // Make API Request
   const res = await fetch(`${SERVER_PATH}/api/register`, {
@@ -36,10 +55,10 @@ export async function LoginUser(user: LoginForm): Promise<UserResponse> {
     body: JSON.stringify(user),
   });
   const status = res.status;
-  const data = await res.json();
+  const data = (await res.json()) as UserResponse;
 
   // Handle Error
-  if (!res.ok) {
+  if (!res.ok || !data.username) {
     throw new Error(`${data.message || "Something unexpected happened"} (${status})`);
   }
 

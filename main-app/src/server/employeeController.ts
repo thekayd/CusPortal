@@ -1,5 +1,4 @@
 import { Request, Response, Router } from "express";
-import { createAccount } from "../db/mongodb-integration";
 import { handleServerError, validatePassword } from "./utils";
 import { EmployeeLoginFormSchema } from "../components/EmployeeSignInForm";
 import { SelectEmployee } from "../db/EmployeeModel";
