@@ -4,7 +4,7 @@ import { EmployeeLoginFormSchema } from "../components/EmployeeSignInForm";
 import { SelectEmployee } from "../db/EmployeeModel";
 import { Employee } from "./validators";
 
-interface EmployeeResponse {
+export interface EmployeeResponse {
   status: string;
   message: string;
   employee: Employee;

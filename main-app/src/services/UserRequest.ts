@@ -3,10 +3,11 @@ import { UserResponse } from "../server/userController";
 import { LoginForm } from "../components/LoginForm";
 import { SERVER_PATH } from "../lib/utils";
 
+// Gets the user
 export async function ShowUser(username: string): Promise<UserResponse> {
   // Make API Request
   const res = await fetch(`${SERVER_PATH}/api/users/${username}`, {
-    method: "POST",
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
