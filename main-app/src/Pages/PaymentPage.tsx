@@ -45,7 +45,7 @@ export default function PaymentPage() {
 
   // Redirect to AccountInfoPage if payment is successful
   if (paymentSuccessful) {
-    return <Navigate to={`/account-info?username=${username}`} replace />;
+    return <Navigate to={`/account-info?username=${username}`} />;
   }
 
   return (
