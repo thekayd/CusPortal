@@ -2,6 +2,16 @@
 import { Check } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/Dialog";
+import { useState } from "react";
+import { useToast } from "./ui/useToast";
 
 interface Transaction {
   id: string;
@@ -25,7 +35,7 @@ export default function PaymentCards({
   onVerify,
   onSubmit,
   setVerifyingId,
-  setIsDialogOpen
+  setIsDialogOpen,
 }: PaymentCardsProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -42,12 +52,8 @@ export default function PaymentCards({
             <CardTitle>{transaction.payee}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">
-              ${transaction.amount.toFixed(2)}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              SWIFT Code: {transaction.swiftCode}
-            </p>
+            <p className="text-2xl font-bold">${transaction.amount.toFixed(2)}</p>
+            <p className="text-sm text-muted-foreground">SWIFT Code: {transaction.swiftCode}</p>
           </CardContent>
           <CardFooter className="flex flex-col items-stretch gap-2">
             <Button
@@ -85,5 +91,103 @@ export default function PaymentCards({
         </Card>
       ))}
     </div>
+  );
+}
+
+export function PaymentCard({
+  transaction,
+  onSubmit,
+  handleVerify,
+}: {
+  transaction: Transaction;
+  onSubmit: (id: string) => void;
+  handleVerify: (id: string) => void;
+}) {
+  const [verifyingId, setVerifyingId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { showToast } = useToast();
+
+  return (
+    <>
+      <Card
+        key={transaction.id}
+        className={`transition-all duration-300 ${
+          transaction.submitted
+            ? "bg-green-50 dark:bg-green-900"
+            : "hover:shadow-lg dark:hover:shadow-primary/25"
+        }`}
+      >
+        <CardHeader>
+          <CardTitle>{transaction.payee}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl font-bold">${transaction.amount.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground">SWIFT Code: {transaction.swiftCode}</p>
+        </CardContent>
+        <CardFooter className="flex flex-col items-stretch gap-2">
+          <Button
+            variant={transaction.verified ? "secondary" : "default"}
+            disabled={transaction.verified || transaction.submitted}
+            onClick={() => {
+              setVerifyingId(transaction.id);
+              setIsDialogOpen(true);
+            }}
+            className="w-full"
+          >
+            {transaction.verified ? (
+              <>
+                <Check className="mr-2 h-4 w-4" /> Verified
+              </>
+            ) : (
+              "Verify SWIFT Code"
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            disabled={!transaction.verified || transaction.submitted}
+            onClick={() => onSubmit(transaction.id)}
+            className="w-full"
+          >
+            {transaction.submitted ? (
+              <>
+                <Check className="mr-2 h-4 w-4" /> Submitted to SWIFT
+              </>
+            ) : (
+              "Submit to SWIFT"
+            )}
+          </Button>
+        </CardFooter>
+      </Card>
+
+      <Dialog
+        open={isDialogOpen}
+        onOpenChange={(isOpen: boolean | ((prevState: boolean) => boolean)) =>
+          setIsDialogOpen(isOpen)
+        }
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Verify SWIFT Code</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to verify this SWIFT code? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (!verifyingId) return;
+                handleVerify(verifyingId);
+                setIsDialogOpen(false);
+              }}
+            >
+              Verify
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

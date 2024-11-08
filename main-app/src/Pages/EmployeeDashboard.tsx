@@ -2,11 +2,12 @@
 
 "use client";
 
-import { useState } from "react";
-import { Button } from "../components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../components/ui/Dialog";
+import { useEffect, useState } from "react";
 import { useToast } from "../components/ui/useToast";
-import PaymentCards from "../components/PaymentCards";
+import { PaymentCard } from "../components/PaymentCards";
+import { GetPayments } from "../services/PaymentsRequest";
+import { Payment } from "../db/PaymentModel";
+import { toast } from "sonner";
 
 interface Transaction {
   id: string;
@@ -19,14 +20,51 @@ interface Transaction {
 
 export default function EmployeeDashboardPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([
-    { id: "1", payee: "John Doe", amount: 500, swiftCode: "ABC123", verified: false, submitted: false },
-    { id: "2", payee: "Jane Smith", amount: 750, swiftCode: "DEF456", verified: false, submitted: false },
-    { id: "3", payee: "Sam Wilson", amount: 200, swiftCode: "GHI789", verified: false, submitted: false },
+    {
+      id: "1",
+      payee: "John Doe",
+      amount: 500,
+      swiftCode: "ABC123",
+      verified: false,
+      submitted: false,
+    },
+    {
+      id: "2",
+      payee: "Jane Smith",
+      amount: 750,
+      swiftCode: "DEF456",
+      verified: false,
+      submitted: false,
+    },
+    {
+      id: "3",
+      payee: "Sam Wilson",
+      amount: 200,
+      swiftCode: "GHI789",
+      verified: false,
+      submitted: false,
+    },
   ]);
 
-  const [verifyingId, setVerifyingId] = useState<string | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [payments, setPayments] = useState<Payment[]>([]);
+  console.log("Payments: ", payments);
+
+  // const [verifyingId, setVerifyingId] = useState<string | null>(null);
+  // const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { showToast } = useToast();
+
+  // useEffect(() => {
+  //   async function fetchPayments() {
+  //     try {
+  //       const response = await GetPayments();
+  //       setPayments(response.payments);
+  //     } catch (error: any) {
+  //       console.log("Fetching Payments Error: ", error);
+  //       toast.error(`Failed to fetch Payments: ${error?.message}`);
+  //     }
+  //   }
+  //   fetchPayments();
+  // }, []);
 
   const handleVerify = (id: string) => {
     setTransactions((prevTransactions) =>
@@ -34,8 +72,8 @@ export default function EmployeeDashboardPage() {
         transaction.id === id ? { ...transaction, verified: true } : transaction
       )
     );
-    setVerifyingId(null);
-    setIsDialogOpen(false);
+    // setVerifyingId(null);
+    // setIsDialogOpen(false);
     showToast("SWIFT Code Verified", { type: "success" });
   };
 
@@ -51,15 +89,24 @@ export default function EmployeeDashboardPage() {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Employee Dashboard</h1>
-      <PaymentCards
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {transactions.map((transaction) => (
+          <PaymentCard
+            onSubmit={handleSubmit}
+            handleVerify={handleVerify}
+            transaction={transaction}
+          />
+        ))}
+      </div>
+      {/* <PaymentCards
         transactions={transactions}
         onVerify={(id) => handleVerify(id)}
         onSubmit={(id) => handleSubmit(id)}
         setVerifyingId={setVerifyingId}
         setIsDialogOpen={setIsDialogOpen}
-      />
+      /> */}
 
-      <Dialog
+      {/* <Dialog
         open={isDialogOpen}
         onOpenChange={(isOpen: boolean | ((prevState: boolean) => boolean)) =>
           setIsDialogOpen(isOpen)
@@ -76,12 +123,10 @@ export default function EmployeeDashboardPage() {
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={() => verifyingId && handleVerify(verifyingId)}>
-              Verify
-            </Button>
+            <Button onClick={() => verifyingId && handleVerify(verifyingId)}>Verify</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 }

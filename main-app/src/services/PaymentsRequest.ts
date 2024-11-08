@@ -24,7 +24,7 @@ export async function CreatePayment(payload: PaymentPayload): Promise<PaymentRes
 
 export async function GetPayments(): Promise<PaymentResponse> {
   // Make API Request
-  const res = await fetch(`${SERVER_PATH}/api/payment`, {
+  const res = await fetch(`${SERVER_PATH}/api/payment/all`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

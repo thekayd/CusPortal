@@ -42,12 +42,13 @@ router.post("/payment", async (req: Request, res: Response) => {
 });
 
 // GET ALL (index)
-router.get("/payment", async (req: Request, res: Response) => {
+router.get("/payment/all", async (req: Request, res: Response) => {
   let payments: Payment[];
   let detailedPayments: DetailedPayment[] = [];
 
   try {
     payments = await GetAllPayments();
+    console.log("Payments: ", payments);
   } catch (error) {
     handleServerError(error, res, CONTROLLER, "index");
     return;
