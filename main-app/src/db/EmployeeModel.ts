@@ -5,6 +5,9 @@ import { handleMongoError } from "../server/utils";
 
 const MODEL = "EmployeeModel" as const;
 
+// ID: 004
+// Passowrd: test@0111
+
 // MongoDB Employee Schema
 const EmployeeSchema = new mongoose.Schema<Employee>({
   name: { type: String, required: true },
@@ -55,7 +58,12 @@ export async function SelectEmployee(selectPayload: Partial<Employee>): Promise<
     if (!employee) {
       throw new Error("404 on Select Employee");
     }
-    return { ...employee };
+    return {
+      email: employee.email,
+      empID: employee.empID,
+      name: employee.name,
+      password: employee.password,
+    };
   } catch (error) {
     throw handleMongoError(error, MODEL, "Select");
   }

@@ -1,8 +1,7 @@
 import { Request, Response, Router } from "express";
 import { handleServerError, validatePassword } from "./utils";
-import { EmployeeLoginFormSchema } from "../components/EmployeeSignInForm";
 import { SelectEmployee } from "../db/EmployeeModel";
-import { Employee } from "./validators";
+import { Employee, EmployeeLoginFormSchema } from "./validators";
 
 export interface EmployeeResponse {
   status: string;
@@ -37,7 +36,7 @@ router.post("/employee/login", async (req: Request, res: Response) => {
       return;
     }
 
-    res.json({
+    res.status(200).json({
       status: "200",
       message: "Logged in successfully",
       employee: employee,

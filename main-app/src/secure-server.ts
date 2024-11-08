@@ -9,6 +9,7 @@ import getEnv from "./server/secrets";
 import userController from "./server/userController";
 import paymentController from "./server/paymentController";
 import accountController from "./server/accountInfoController";
+import employeeController from "./server/employeeController";
 import ExpressBrute from "express-brute";
 import mongoose from "mongoose";
 
@@ -70,6 +71,7 @@ app.get("/*", (req: Request, res: Response) => {
 app.use("/api", bruteforce.prevent, userController);
 app.use("/api", bruteforce.prevent, paymentController);
 app.use("/api", bruteforce.prevent, accountController);
+app.use("/api", bruteforce.prevent, employeeController);
 // Start HTTPS server
 https.createServer(options, app).listen(port + 1, () => {
   console.log(`HTTPS Server running on https://${HOST}:${port + 1}`);

@@ -95,6 +95,11 @@ export const employeeSchema = z.object({
 });
 export type Employee = z.infer<typeof employeeSchema>;
 
+export const EmployeeLoginFormSchema = z.object({
+  empID: z.string().min(3, { message: "Employee ID is required." }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
+});
+
 const paymentSchema = z.object({
   amount: z.number().positive(),
   currency: z.enum(["USD", "EUR", "GBP", "ZAR"]),

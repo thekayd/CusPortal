@@ -11,11 +11,7 @@ import { verifyEmployeeLogin, RequestServiceResponse } from "../lib/RequestServi
 import { useAuth } from "../lib/AuthContext";
 import { LoginEmployee } from "../services/EmployeeRequest";
 import { EmployeeResponse } from "../server/employeeController";
-
-export const EmployeeLoginFormSchema = z.object({
-  empID: z.string().min(3, { message: "Employee ID is required." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
-});
+import { EmployeeLoginFormSchema } from "../server/validators";
 
 export type EmployeeLoginForm = z.infer<typeof EmployeeLoginFormSchema>;
 

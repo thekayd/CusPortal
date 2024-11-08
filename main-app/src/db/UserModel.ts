@@ -42,7 +42,14 @@ export async function SelectUser(selectPayload: Partial<User>): Promise<User> {
       throw new Error("404 on Select User");
     }
 
-    return { ...user };
+    return {
+      username: user.username,
+      accountNumber: user.accountNumber,
+      email: user.email,
+      fullName: user.fullName,
+      idNumber: user.idNumber,
+      password: user.password,
+    };
   } catch (error) {
     console.error("Error finding user:", error);
     throw error;
