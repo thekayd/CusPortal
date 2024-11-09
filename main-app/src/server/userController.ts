@@ -29,7 +29,14 @@ router.get("/users/:username", async (req: Request, res: Response) => {
 
   try {
     const user = await SelectUser({ username });
-    res.json({ message: "User found", username: username, user: user } as UserResponse);
+    res.json({
+      message: "User found",
+      username: username,
+      user: {
+        ...user,
+        password: "", // don't send password to client
+      },
+    } as UserResponse);
   } catch (error) {
     handleServerError(error, res, CONTROLLER, "show");
     return;

@@ -36,7 +36,8 @@ app.use(express.json()); // for parsing application/json
 app.use(helmet()); // for security
 app.use(
   cors({
-    origin: `http://${HOST}:${port}`, // Ensuring it only allows request from the same origin (Prevents )
+    // origin: `http://${HOST}:${port}`, // Ensuring it only allows request from the same origin (Prevents )
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     optionsSuccessStatus: 200,
@@ -62,16 +63,17 @@ export const bruteforce = new ExpressBrute(store, {
 // Serve static files from the Next.js build directory
 app.use(express.static(path.join(__dirname, "../build"))); // only necessary for production
 
-// Serve the Create-React-App site
-app.get("/*", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../build", "index.html"));
-});
-
 // API routes using a controller for clean abstraction
 app.use("/api", bruteforce.prevent, userController);
 app.use("/api", bruteforce.prevent, paymentController);
 app.use("/api", bruteforce.prevent, accountController);
 app.use("/api", bruteforce.prevent, employeeController);
+
+// Serve the Create-React-App site
+app.get("/*", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "../build", "index.html"));
+});
+
 // Start HTTPS server
 https.createServer(options, app).listen(port + 1, () => {
   console.log(`HTTPS Server running on https://${HOST}:${port + 1}`);

@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "./ui/Dialog";
 import { useState } from "react";
-import { useToast } from "./ui/useToast";
+import { DashboardPayment } from "../Pages/EmployeeDashboard";
 
 interface Transaction {
   id: string;
@@ -95,46 +95,46 @@ export default function PaymentCards({
 }
 
 export function PaymentCard({
-  transaction,
+  payment: { accountNumber, amount, currency, date, id, provider, user, submitted, verified },
   onSubmit,
   handleVerify,
 }: {
-  transaction: Transaction;
+  payment: DashboardPayment;
   onSubmit: (id: string) => void;
   handleVerify: (id: string) => void;
 }) {
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { showToast } = useToast();
 
   return (
     <>
       <Card
-        key={transaction.id}
         className={`transition-all duration-300 ${
-          transaction.submitted
+          submitted
             ? "bg-green-50 dark:bg-green-900"
             : "hover:shadow-lg dark:hover:shadow-primary/25"
         }`}
       >
         <CardHeader>
-          <CardTitle>{transaction.payee}</CardTitle>
+          <CardTitle>{user.fullName}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold">${transaction.amount.toFixed(2)}</p>
-          <p className="text-sm text-muted-foreground">SWIFT Code: {transaction.swiftCode}</p>
+          <p className="text-2xl font-bold">${amount.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground">
+            SWIFT Code: {provider} (NO SWIFT CODE ON PAYMENTS)
+          </p>
         </CardContent>
         <CardFooter className="flex flex-col items-stretch gap-2">
           <Button
-            variant={transaction.verified ? "secondary" : "default"}
-            disabled={transaction.verified || transaction.submitted}
+            variant={verified ? "secondary" : "default"}
+            disabled={verified || submitted}
             onClick={() => {
-              setVerifyingId(transaction.id);
+              setVerifyingId(id);
               setIsDialogOpen(true);
             }}
             className="w-full"
           >
-            {transaction.verified ? (
+            {verified ? (
               <>
                 <Check className="mr-2 h-4 w-4" /> Verified
               </>
@@ -144,11 +144,11 @@ export function PaymentCard({
           </Button>
           <Button
             variant="outline"
-            disabled={!transaction.verified || transaction.submitted}
-            onClick={() => onSubmit(transaction.id)}
+            disabled={!verified || submitted}
+            onClick={() => onSubmit(id)}
             className="w-full"
           >
-            {transaction.submitted ? (
+            {submitted ? (
               <>
                 <Check className="mr-2 h-4 w-4" /> Submitted to SWIFT
               </>
