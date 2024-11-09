@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import useQuery from "../lib/useQuery";
+import { toast } from "sonner";
+import { CreateAccount } from "../services/AccountRequest";
 
 export default function AccountInfoPage() {
   const [accountNumber, setAccountNumber] = useState("");
@@ -38,29 +40,18 @@ export default function AccountInfoPage() {
     };
 
     console.log("Submitting account data:", accountData);
-
-    try {
-      const response = await fetch("/api/account-info", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(accountData),
-      });
-
-      console.log("Response from server:", response);
-
-      if (response.ok) {
-        console.log("Account info submitted successfully:", accountData);
-        alert("Account information saved successfully!");
+    toast.promise(CreateAccount(accountData), {
+      loading: "Creating account, please wait...",
+      success: (res: any) => {
+        console.log("Account created Res:", res);
         setSubmitted(true);
-      } else {
-        const errorData = await response.json();
-        console.error("Account info submission error:", errorData.message);
-      }
-    } catch (error) {
-      console.error("Error submitting account info:", error);
-    }
+        return `Account created successfully! ${res.message}`;
+      },
+      error: (error: any) => {
+        console.error("Error creating account:", error);
+        return `Error creating account: ${error.message}`;
+      },
+    });
   };
 
   // Redirect after successful submission
@@ -126,9 +117,7 @@ export default function AccountInfoPage() {
                 </div>
 
                 {/* Display error message if any */}
-                {errorMessage && (
-                  <div className="text-red-600">{errorMessage}</div>
-                )}
+                {errorMessage && <div className="text-red-600">{errorMessage}</div>}
               </div>
 
               <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
