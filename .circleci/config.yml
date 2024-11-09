@@ -20,15 +20,12 @@ jobs:
   sonarqube:
     working_directory: ~/build
     docker:
-      - image: sonarsource/sonar-scanner-cli  # Use sonar-scanner-cli image for this job
+      - image: cimg/base:stable
     resource_class: small
     steps:
       - checkout
       - attach_workspace:
           at: ~/workspace
-      - run:
-          name: "List files in workspace"
-          command: find .
       - run:
           name: "Run SonarQube Scanner"
           command: |
