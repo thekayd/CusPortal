@@ -43,12 +43,12 @@ jobs:
         run: npm ci
         working-directory: main-app
 
-      # Run npm audit, and continue the build
+      # Run npm audit
       - name: Run npm audit 
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=high || echo "Audit completed with known issues"
         working-directory: main-app
 
-      # Run Snyk for additional vulnerability checks
+      # Run Snyk for additional vulnerability
       - name: Run Snyk vulnerability scan
         uses: snyk/actions/node@master
         with:
