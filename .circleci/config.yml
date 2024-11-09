@@ -20,7 +20,7 @@ jobs:
   sonarqube:
     working_directory: ~/build
     docker:
-      - image: cimg/base:stable
+      - image: sonarsource/sonar-scanner-cli  # Using sonar-scanner-cli image with sonar-scanner pre-installed
     resource_class: small
     steps:
       - checkout
