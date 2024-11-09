@@ -1,7 +1,7 @@
 // ../components/PaymentCards.tsx
 import { Check } from "lucide-react";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import {
   Dialog,
   DialogContent,
@@ -95,7 +95,18 @@ export default function PaymentCards({
 }
 
 export function PaymentCard({
-  payment: { accountNumber, amount, currency, date, id, provider, user, submitted, verified },
+  payment: {
+    accountNumber,
+    amount,
+    currency,
+    date,
+    id,
+    provider,
+    user,
+    accountInfo,
+    submitted,
+    verified,
+  },
   onSubmit,
   handleVerify,
 }: {
@@ -105,6 +116,17 @@ export function PaymentCard({
 }) {
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const currencySymbol =
+    currency === "USD"
+      ? "$"
+      : currency === "EUR"
+      ? "€"
+      : currency === "ZAR"
+      ? "R"
+      : currency === "GBP"
+      ? "£"
+      : "";
 
   return (
     <>
@@ -116,13 +138,14 @@ export function PaymentCard({
         }`}
       >
         <CardHeader>
-          <CardTitle>{user.fullName}</CardTitle>
+          <CardTitle>{user.username}</CardTitle>
+          <CardDescription>{user.accountNumber}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold">${amount.toFixed(2)}</p>
-          <p className="text-sm text-muted-foreground">
-            SWIFT Code: {provider} (NO SWIFT CODE ON PAYMENTS)
+          <p className="text-2xl font-bold">
+            {currencySymbol} {amount.toFixed(2)}
           </p>
+          <p className="text-sm text-muted-foreground">SWIFT Code: {accountInfo.swiftCode}</p>
         </CardContent>
         <CardFooter className="flex flex-col items-stretch gap-2">
           <Button

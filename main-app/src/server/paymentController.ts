@@ -9,8 +9,9 @@ import {
 import { SelectUser } from "../db/UserModel";
 import { User } from "./validators";
 import { handleServerError } from "./utils";
+import { AccountInfo, SelectAccount } from "../db/AccountModel";
 
-export type DetailedPayment = Payment & { user: User };
+export type DetailedPayment = Payment & { accountInfo: AccountInfo; user: Partial<User> };
 export interface PaymentResponse {
   status: string;
   message: string;
@@ -32,9 +33,19 @@ router.get("/payment/all", async (req: Request, res: Response) => {
     // Find user's that made the payments
     detailedPayments = await Promise.all(
       payments.map(async (payment) => {
-        const user = await SelectUser({ accountNumber: payment.accountNumber });
-        console.log("Found user: ", user);
-        return { ...payment, user: { ...user, password: "" } };
+        try {
+          const account = await SelectAccount({ accountNumber: payment.accountNumber });
+          const user = await SelectUser({ accountNumber: payment.accountNumber });
+          console.log("Found account: ", account);
+          return { ...payment, accountInfo: { ...account }, user: { ...user, password: "" } };
+        } catch (error: any) {
+          return {
+            ...payment,
+            accountInfo: { accountNumber: "", swiftCode: "", bankName: "", date: new Date() },
+            user: { username: "", password: "", accountNumber: "" },
+          };
+          // throw new Error(`Error finding account for payment ${payment.id}: ${error.message}`);
+        }
       })
     );
 
@@ -62,12 +73,13 @@ router.get("/payment/:id", async (req: Request, res: Response) => {
 
   try {
     const payment = await SelectPayment({ id: paymentId });
+    const account = await SelectAccount({ accountNumber: payment.accountNumber });
     const user = await SelectUser({ accountNumber: payment.accountNumber });
 
     res.status(200).json({
       status: "200",
       message: "Payment Found",
-      payments: [{ ...payment, user: user }],
+      payments: [{ ...payment, accountInfo: account, user: { ...user, password: "" } }],
     } as PaymentResponse);
   } catch (error) {
     handleServerError(error, res, CONTROLLER, "Show");
