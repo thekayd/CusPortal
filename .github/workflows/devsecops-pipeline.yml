@@ -11,85 +11,72 @@ jobs:
     name: Test Pull Request
     runs-on: ubuntu-latest
     steps:
-     - name: Checkout code
-       uses: actions/checkout@v3
-     - name: Setup Node.js
-       uses: actions/setup-node@v3
-       with:
-         node-version: '18'
-     - name: Install dependencies
-       run: npm ci
-       working-directory: main-app  # Set main-app as the working directory
-     - name: Run tests
-       run: npm test
-       working-directory: main-app  # Run tests from main-app
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: main-app
+
+      - name: Run tests
+        run: npm test
+        working-directory: main-app
 
   security_checks:
     name: Security Checks
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Cache npm modules
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
+        working-directory: main-app
 
-    - name: Install dependencies
-      run: npm ci
-      working-directory: main-app
+      - name: Run npm audit for vulnerabilities
+        run: npm audit --audit-level=moderate
+        working-directory: main-app
 
-    - name: Run npm audit for vulnerabilities
-      run: npm audit --audit-level=moderate
-      working-directory: main-app
-
-    - name: Run Snyk for vulnerability check
-      uses: snyk/actions/node@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Run Snyk for vulnerability check
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   code_quality:
     name: Code Quality
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Cache npm modules
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
+        working-directory: main-app
 
-    - name: Install dependencies
-      run: npm ci
-      working-directory: main-app
+      - name: Run ESLint
+        run: npx eslint . --fix
+        working-directory: main-app
 
-    - name: Run ESLint
-      run: npx eslint . --fix
-      working-directory: main-app
+      - name: Run Prettier
+        run: npx prettier --write .
+        working-directory: main-app
 
-    - name: Run Prettier
-      run: npx prettier --write .
-      working-directory: main-app
-
-   security_scanning:
+  security_scanning:
     name: Security Scanning with OWASP ZAP
     runs-on: ubuntu-latest
     steps:
@@ -123,28 +110,20 @@ jobs:
     name: Database Connection Test
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Cache npm modules
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
+        working-directory: main-app
 
-    - name: Install dependencies
-      run: npm ci
-      working-directory: main-app
-
-    - name: Run database connection test
-      run: npm test src/tests/database.test.js
-      working-directory: main-app
-      env:
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      - name: Run database connection test
+        run: npm test src/tests/database.test.js
+        working-directory: main-app
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
