@@ -89,35 +89,35 @@ jobs:
       run: npx prettier --write .
       working-directory: main-app
 
-  security_scanning:
+   security_scanning:
     name: Security Scanning with OWASP ZAP
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install dependencies
-      run: npm ci
-      working-directory: main-app
+      - name: Install dependencies
+        run: npm ci
+        working-directory: main-app
 
-    - name: Start Application Server
-      run: npm start &
-      working-directory: main-app
+      - name: Start Application Server
+        run: npm start &
+        working-directory: main-app
 
-    - name: Wait for server to be ready
-      run: sleep 15  # Adjust this delay if necessary
+      - name: Wait for server to be ready
+        run: sleep 15  # Adjust if server needs more time to start
 
-    - name: Run OWASP ZAP Scan
-      uses: zaproxy/action-full-scan@v0.7.0
-      with:
-        target: 'http://localhost:3001'  # Use the actual port your app runs on
-      env:
-        JAVA_OPTS: '-Xmx1024m -Xms512m'
+      - name: Run OWASP ZAP Scan
+        uses: zaproxy/action-full-scan@v0.7.0
+        with:
+          target: 'http://localhost:3001'  # Adjust the port if necessary
+        env:
+          JAVA_OPTS: '-Xmx1024m -Xms512m'
 
   database_test:
     name: Database Connection Test
