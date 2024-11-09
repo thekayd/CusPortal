@@ -45,7 +45,7 @@ jobs:
 
       # Run npm audit, and continue the build
       - name: Run npm audit 
-        run: npm audit --audit-level=high"
+        run: npm audit --audit-level=high
         working-directory: main-app
 
       # Run Snyk for additional vulnerability checks
