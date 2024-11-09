@@ -13,31 +13,19 @@ jobs:
     steps:
      - name: Checkout code
        uses: actions/checkout@v3
-
      - name: Setup Node.js
        uses: actions/setup-node@v3
        with:
-         node-version: '18'
-
-     - name: Cache npm modules
-       uses: actions/cache@v3
-       with:
-         path: ~/.npm
-         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-         restore-keys: |
-           ${{ runner.os }}-node-
-
+         node-version: '14'
      - name: Install dependencies
        run: npm ci
-       working-directory: main-app
-
+       working-directory: main-app  # Set main-app as the working directory
      - name: Run tests
        run: npm test
-       working-directory: main-app
-
+       working-directory: main-app  # Run tests from main-app
      - name: Build application
        run: npm run build
-       working-directory: main-app
+       working-directory: main-app  # Build from main-app
 
   security_checks:
     name: Security Checks
@@ -45,29 +33,17 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-
-    - name: Cache npm modules
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
     - name: Install dependencies
       run: npm ci
-      working-directory: main-app
-
-    - name: Run npm audit for vulnerabilities
+      working-directory: main-app  # Set working directory
+    - name: Run npm audit
       run: npm audit --audit-level=moderate
-      working-directory: main-app
-
-    - name: Run Snyk for vulnerability check
+      working-directory: main-app  # Set working directory
+    - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/node@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -78,61 +54,30 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-
-    - name: Cache npm modules
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
     - name: Install dependencies
       run: npm ci
-      working-directory: main-app
-
+      working-directory: main-app  # Set working directory
     - name: Run ESLint
-      run: npx eslint . --fix
-      working-directory: main-app
-
+      run: npx eslint .
+      working-directory: main-app  # Set working directory
     - name: Run Prettier
-      run: npx prettier --write .
-      working-directory: main-app
+      run: npx prettier --check .
+      working-directory: main-app  # Set working directory
 
   security_scanning:
-    name: Security Scanning with OWASP ZAP
+    name: Security Scanning
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-
-    - name: Install dependencies
-      run: npm ci
-      working-directory: main-app
-
-    - name: Start Application Server
-      run: npm start &
-      working-directory: main-app
-
-    - name: Wait for server to be ready
-      run: sleep 15  # Adjust this delay if necessary
-
     - name: Run OWASP ZAP Scan
       uses: zaproxy/action-full-scan@v0.7.0
       with:
-        target: 'http://localhost:3001'  # Use the actual port your app runs on
-      env:
-        JAVA_OPTS: '-Xmx1024m -Xms512m'
+        target: 'https://localhost:3001'  # Ensure your app is running for the scan
 
   database_test:
     name: Database Connection Test
@@ -140,26 +85,15 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-
-    - name: Cache npm modules
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
     - name: Install dependencies
       run: npm ci
-      working-directory: main-app
-
+      working-directory: main-app  # Set working directory
     - name: Run database connection test
       run: npm test src/tests/database.test.js
-      working-directory: main-app
+      working-directory: main-app  # Set working directory
       env:
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
