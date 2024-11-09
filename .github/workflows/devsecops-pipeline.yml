@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
+  # Job 1: Pull Request Testing
   test_pull_request:
     name: Test Pull Request
     runs-on: ubuntu-latest
@@ -27,6 +28,7 @@ jobs:
         run: npm test
         working-directory: main-app
 
+  # Job 2: Security Checks
   security_checks:
     name: Security Checks
     runs-on: ubuntu-latest
@@ -43,15 +45,18 @@ jobs:
         run: npm ci
         working-directory: main-app
 
+      # Run npm audit for vulnerability scanning
       - name: Run npm audit for vulnerabilities
         run: npm audit --audit-level=moderate
         working-directory: main-app
 
-      - name: Run Snyk for vulnerability check
+      # Run Snyk for additional vulnerability checks
+      - name: Run Snyk vulnerability scan
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+  # Job 3: Code Quality Checks
   code_quality:
     name: Code Quality
     runs-on: ubuntu-latest
@@ -68,41 +73,17 @@ jobs:
         run: npm ci
         working-directory: main-app
 
+      # Run ESLint for JavaScript/TypeScript code style and linting
       - name: Run ESLint
         run: npx eslint . --fix
         working-directory: main-app
 
+      # Run Prettier for code formatting
       - name: Run Prettier
         run: npx prettier --write .
         working-directory: main-app
 
-  security_checks:
-    name: Security Checks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: main-app
-
-      # Run npm audit for vulnerabilities
-      - name: Run npm audit
-        run: npm audit --audit-level=moderate
-        working-directory: main-app
-
-      # Run Snyk for vulnerability check
-      - name: Run Snyk vulnerability scan
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
+  # Job 4: Database Connection Testing
   database_test:
     name: Database Connection Test
     runs-on: ubuntu-latest
@@ -119,6 +100,7 @@ jobs:
         run: npm ci
         working-directory: main-app
 
+      # Run the database test with environment variable for MongoDB URI
       - name: Run database connection test
         run: npm test src/tests/database.test.js
         working-directory: main-app
