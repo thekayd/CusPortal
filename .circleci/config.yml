@@ -23,6 +23,10 @@ jobs:
       - image: sonarsource/sonar-scanner-cli
     resource_class: small
     steps:
+      - run:
+          name: "Install dependencies"
+          command: |
+            apk update && apk add findutils
       - attach_workspace:
           at: ~/workspace
       - run: find .
