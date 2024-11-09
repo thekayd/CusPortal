@@ -43,19 +43,19 @@ jobs:
         run: npm ci
         working-directory: main-app
 
-      # Run npm audit, ignore errors, and continue the build
-      - name: Run npm audit with ignored errors
-        run: npm audit --audit-level=high || echo "Audit completed with known issues"
+      # Run npm audit, and continue the build
+      - name: Run npm audit 
+        run: npm audit --audit-level=high"
         working-directory: main-app
 
-      # Run Snyk for additional vulnerability checks without failing the build
+      # Run Snyk for additional vulnerability checks
       - name: Run Snyk vulnerability scan
         uses: snyk/actions/node@master
         with:
           command: test --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        continue-on-error: true  # Allows the job to continue even if vulnerabilities are found
+        continue-on-error: true  
 
   code_quality:
     name: Code Quality
