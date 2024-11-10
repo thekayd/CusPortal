@@ -40,6 +40,8 @@ export default function AccountInfoPage() {
     };
 
     console.log("Submitting account data:", accountData);
+
+    // Provides the nice loading/success/error toasts
     toast.promise(CreateAccount(accountData), {
       loading: "Creating account, please wait...",
       success: (res: any) => {

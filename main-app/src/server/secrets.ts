@@ -1,6 +1,8 @@
 require("dotenv").config();
 import z from "zod";
 
+// This allows the environment variables to be structured, typesafe, and secure for Server & client use
+
 const envSchema = z.object({
   PORT: z.string().nonempty(),
   SSL_KEY_PATH: z.string().nonempty(),

@@ -4,6 +4,8 @@ import { SignUpForm } from "../components/SignUpForm";
 import { LoginForm } from "../components/LoginForm";
 import { EmployeeSignInForm } from "../components/EmployeeSignInForm";
 
+// Contains the login and sign up pages for Users & Employees
+
 export function SignUpPage() {
   return (
     <Card className="mx-auto w-full max-w-md shadow-2xl">

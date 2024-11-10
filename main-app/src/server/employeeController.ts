@@ -8,7 +8,6 @@ export interface EmployeeResponse {
   message: string;
   employee: Employee;
 }
-
 const router = Router();
 
 // Handles Login of existing users

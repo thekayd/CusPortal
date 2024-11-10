@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+// This file manages the connection and management of to MongoDB through Mongoose
+
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI;
 

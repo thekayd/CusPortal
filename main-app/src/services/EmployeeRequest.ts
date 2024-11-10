@@ -2,6 +2,7 @@ import { EmployeeLoginForm } from "../components/EmployeeSignInForm";
 import { SERVER_PATH } from "../lib/utils";
 import { EmployeeResponse } from "../server/employeeController";
 
+// Handles logging in an employee
 export async function LoginEmployee(payload: EmployeeLoginForm): Promise<EmployeeResponse> {
   // Make API Request
   const res = await fetch(`${SERVER_PATH}/api/employee/login`, {

@@ -3,6 +3,8 @@ import useQuery from "../lib/useQuery";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 
+// User's dashboard Page
+
 export default function DashboardPage() {
   const [signOut, setSignOut] = useState(false);
   const query = useQuery();
@@ -24,7 +26,11 @@ export default function DashboardPage() {
                 <ul className="list-disc space-y-2">
                   <li className="flex items-start">
                     <span className="h-6 flex items-center sm:h-7">
-                      <svg className="flex-shrink-0 h-5 w-5 text-cyan-500" viewBox="0 0 20 20" fill="currentColor">
+                      <svg
+                        className="flex-shrink-0 h-5 w-5 text-cyan-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
                         <path
                           fillRule="evenodd"
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -36,7 +42,11 @@ export default function DashboardPage() {
                   </li>
                   <li className="flex items-start">
                     <span className="h-6 flex items-center sm:h-7">
-                      <svg className="flex-shrink-0 h-5 w-5 text-cyan-500" viewBox="0 0 20 20" fill="currentColor">
+                      <svg
+                        className="flex-shrink-0 h-5 w-5 text-cyan-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
                         <path
                           fillRule="evenodd"
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -48,7 +58,11 @@ export default function DashboardPage() {
                   </li>
                   <li className="flex items-start">
                     <span className="h-6 flex items-center sm:h-7">
-                      <svg className="flex-shrink-0 h-5 w-5 text-cyan-500" viewBox="0 0 20 20" fill="currentColor">
+                      <svg
+                        className="flex-shrink-0 h-5 w-5 text-cyan-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
                         <path
                           fillRule="evenodd"
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -63,10 +77,14 @@ export default function DashboardPage() {
               <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
                 <p>Want to make a payment?</p>
                 <p>
-                  <Link to={`/payment?username=${username}`} className="text-cyan-600 hover:text-cyan-700">
+                  <Link
+                    to={`/payment?username=${username}`}
+                    className="text-cyan-600 hover:text-cyan-700"
+                  >
                     Click here to get started &rarr;
                   </Link>
-                </p> {/* Use Link to navigate to the payment page */}
+                </p>{" "}
+                {/* Use Link to navigate to the payment page */}
               </div>
               <Button onClick={() => setSignOut(true)}>Sign out</Button>
               {signOut && <Navigate to="/signup" />}

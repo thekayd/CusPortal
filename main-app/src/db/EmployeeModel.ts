@@ -39,18 +39,6 @@ export async function InsertEmployee(employee: Employee) {
   }
 }
 
-// Handles Updating Employee into DB
-export async function UpdateEmployee(employee: Employee) {
-  try {
-    // Create a new employee document with hashed password
-    const newEmployee = new EmployeeModel(employee);
-    await newEmployee.save();
-    console.log("Employee added:", newEmployee);
-  } catch (error) {
-    throw handleMongoError(error, MODEL, "Update");
-  }
-}
-
 export async function SelectEmployee(selectPayload: Partial<Employee>): Promise<Employee> {
   try {
     const employee = await EmployeeModel.findOne({ ...selectPayload });

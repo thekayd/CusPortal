@@ -3,8 +3,17 @@ import mongoose from "mongoose";
 import { z } from "zod";
 import { handleMongoError } from "../server/utils";
 
+// PLEASE NOT:
+// All functions in this file & in the "/db" folder
+// are used to extract the logic of Database operations.
+// Almost all have an Insert/Create, and Find/Select functions.
+// These functions operate similarly, therefore this file will
+// contain the detailed documentation that can be carreid over to any
+// other Model.
+
 export const MODEL = "Account-Info" as const;
 
+// Modeling the Table Schema & providing the type
 export const AccountSchema = z.object({
   accountNumber: z.string().nonempty(),
   bankName: z.string().nonempty(),
@@ -13,17 +22,16 @@ export const AccountSchema = z.object({
 });
 export type AccountInfo = z.infer<typeof AccountSchema>;
 
-// Account Information Schema
+// Defining the Mongoose Schema for the Table (Model)
 const accountInfoSchema = new mongoose.Schema({
   accountNumber: { type: String, required: true },
   bankName: { type: String, required: true },
   swiftCode: { type: String, required: true },
   date: { type: Date, default: Date.now },
 });
-// Account Information model
 const AccountInfoSchema = mongoose.model("Account-Information", accountInfoSchema);
 
-// Function to create a new account
+// Handles Inserting/Creating an Account
 export async function createAccount(accountData: {
   accountNumber: string;
   bankName: string;
@@ -38,6 +46,8 @@ export async function createAccount(accountData: {
   }
 }
 
+// Handels Select options on the Table (Model) Schema, using a Partial (makes type fields optional) Payload
+// The type annotations are used to ensure that all data is accurate, and the Client knows what to expect
 export async function SelectAccount(selectPayload: Partial<AccountInfo>): Promise<AccountInfo> {
   try {
     const account = await AccountInfoSchema.findOne({ ...selectPayload });

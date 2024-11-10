@@ -8,6 +8,10 @@ interface AccountPayload {
   swiftCode: string;
 }
 
+// Request Services allow the Client to make safe (error handled) requests to the Server
+// This is done to abstract data fetching logic from the View
+
+// Hanldes creating an account-info for a user
 export async function CreateAccount(payload: AccountPayload): Promise<EmployeeResponse> {
   // Make API Request
   const res = await fetch(`${SERVER_PATH}/api/account-info`, {

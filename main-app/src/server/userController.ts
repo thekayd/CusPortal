@@ -5,19 +5,12 @@ import { createUser, SelectUser } from "../db/UserModel";
 import { handleServerError, validatePassword } from "./utils";
 
 const CONTROLLER = "User" as const;
-
 export interface UserResponse {
   message: string;
   username: string;
   user?: User;
 }
-
 const router = Router();
-
-// GET ALL (Index)
-router.get("/users", async (req: Request, res: Response) => {
-  return;
-});
 
 // GET Specific (Show)
 router.get("/users/:username", async (req: Request, res: Response) => {

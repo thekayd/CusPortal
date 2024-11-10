@@ -3,7 +3,7 @@ import { UserResponse } from "../server/userController";
 import { LoginForm } from "../components/LoginForm";
 import { SERVER_PATH } from "../lib/utils";
 
-// Gets the user
+// Handles fetching a single User
 export async function ShowUser(username: string): Promise<UserResponse> {
   // Make API Request
   const res = await fetch(`${SERVER_PATH}/api/users/${username}`, {
@@ -23,6 +23,7 @@ export async function ShowUser(username: string): Promise<UserResponse> {
   return data;
 }
 
+// Handles Registering of a user
 export async function RegisterUser(user: SignUpFormData): Promise<UserResponse> {
   // Make API Request
   const res = await fetch(`${SERVER_PATH}/api/register`, {

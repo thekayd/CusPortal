@@ -30,13 +30,12 @@ router.get("/payment/all", async (req: Request, res: Response) => {
     const payments = await GetAllPayments();
     console.log("Payments: ", payments);
 
-    // Find user's that made the payments
+    // Attaching respective Account info & User for each payment
     detailedPayments = await Promise.all(
       payments.map(async (payment) => {
         try {
           const account = await SelectAccount({ accountNumber: payment.accountNumber });
           const user = await SelectUser({ accountNumber: payment.accountNumber });
-          console.log("Found account: ", account);
           return { ...payment, accountInfo: { ...account }, user: { ...user, password: "" } };
         } catch (error: any) {
           return {
@@ -44,12 +43,9 @@ router.get("/payment/all", async (req: Request, res: Response) => {
             accountInfo: { accountNumber: "", swiftCode: "", bankName: "", date: new Date() },
             user: { username: "", password: "", accountNumber: "" },
           };
-          // throw new Error(`Error finding account for payment ${payment.id}: ${error.message}`);
         }
       })
     );
-
-    console.log("Completed Payments: ", detailedPayments);
 
     res.status(200).json({
       status: "200",
@@ -72,6 +68,7 @@ router.get("/payment/:id", async (req: Request, res: Response) => {
   }
 
   try {
+    // Finding the Payment, Account info, and User associated
     const payment = await SelectPayment({ id: paymentId });
     const account = await SelectAccount({ accountNumber: payment.accountNumber });
     const user = await SelectUser({ accountNumber: payment.accountNumber });
@@ -105,10 +102,5 @@ router.post("/payment", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error submitting payment" });
   }
 });
-
-// PUT/POST (update)
-// router.post("/payment/:id", async (req: Request, res: Response) => {
-
-// });
 
 export default router;

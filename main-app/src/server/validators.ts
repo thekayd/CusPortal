@@ -1,6 +1,8 @@
 import { body } from "express-validator";
 import { z } from "zod";
 
+// These are the data structures & definitions for Database & API models/schemas
+
 // Schemas
 const userSchema = z.object({
   username: z
