@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { useToast } from "../components/ui/useToast";
 import { PaymentCard } from "../components/PaymentCards";
 import { GetPayments } from "../services/PaymentsRequest";
-import { Payment } from "../db/PaymentModel";
 import { toast } from "sonner";
 import { DetailedPayment, PaymentResponse } from "../server/paymentController";
 

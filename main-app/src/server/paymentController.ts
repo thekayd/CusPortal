@@ -28,7 +28,6 @@ router.get("/payment/all", async (req: Request, res: Response) => {
 
   try {
     const payments = await GetAllPayments();
-    console.log("Payments: ", payments);
 
     // Attaching respective Account info & User for each payment
     detailedPayments = await Promise.all(
