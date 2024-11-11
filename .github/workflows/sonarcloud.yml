@@ -1,0 +1,46 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main  # Trigger analysis on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger analysis on pull requests
+
+jobs:
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout Code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Specify the Node.js version (change if needed)
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          npm install
+          npm run build --if-present  # Optional: only if your project has a build step
+
+      # Step 4: Run tests and generate coverage report
+      - name: Run tests and generate coverage
+        run: |
+          npm test -- --coverage
+
+      # Step 5: Upload coverage to SonarCloud
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v2
+        with:
+          organization: thekayd  # Replace with your SonarCloud organization
+          projectKey: thekayd:CusPortal  # Replace with your SonarCloud project key
+          projectName: CusPortal  # Replace with your SonarCloud project name
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # SonarCloud token from GitHub secrets
