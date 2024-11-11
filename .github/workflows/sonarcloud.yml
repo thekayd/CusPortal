@@ -22,26 +22,22 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Specify the Node.js version (change if needed)
+          node-version: '16'  # Use Node.js version 16 (adjust if needed)
 
-      # Step 3: Navigate to main-app directory
-      - name: Navigate to main-app
-        run: cd main-app
-
-      # Step 4: Install dependencies inside main-app
-      - name: Install dependencies
+      # Step 3: Install dependencies and build project
+      - name: Install dependencies and build
         run: |
-          cd main-app  # Ensure you're in the right folder
+          cd main-app  # Navigate to the 'main-app' directory
           npm install
-          npm run build --if-present  # Optional: only if your project has a build step
+          npm run build --if-present  # Only run build if there is a build script
 
-      # Step 5: Run tests and generate coverage report
+      # Step 4: Run tests and generate coverage
       - name: Run tests and generate coverage
         run: |
           cd main-app  # Ensure you're in the right folder
-          npm test -- --coverage
+          npm test -- --coverage  # Run tests and generate a coverage report
 
-      # Step 6: Upload coverage to SonarCloud
+      # Step 5: SonarCloud Scan
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2
         with:
