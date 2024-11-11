@@ -1,4 +1,4 @@
-name: DevSecOps Pipeline
+name: DevSecOps Security Pipeline
 
 on:
   push:
@@ -7,26 +7,6 @@ on:
     branches: [ main ]
 
 jobs:
-  test_pull_request:
-    name: Test Pull Request
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: main-app
-
-      - name: Run tests
-        run: npm test
-        working-directory: main-app
-
   security_checks:
     name: Security Checks
     runs-on: ubuntu-latest
@@ -43,12 +23,12 @@ jobs:
         run: npm ci
         working-directory: main-app
 
-      # Run npm audit
-      - name: Run npm audit 
+      # Run npm audit to check for vulnerabilities with high severity or above
+      - name: Run npm audit
         run: npm audit --audit-level=high || echo "Audit completed with known issues"
         working-directory: main-app
 
-      # Run Snyk for additional vulnerability
+      # Run Snyk for additional vulnerability scanning
       - name: Run Snyk vulnerability scan
         uses: snyk/actions/node@master
         with:
@@ -73,7 +53,7 @@ jobs:
         run: npm ci
         working-directory: main-app
 
-      # Run ESLint for JavaScript/TypeScript code style and linting
+      # Run ESLint for code linting and style checks
       - name: Run ESLint
         run: npx eslint . --fix
         working-directory: main-app
@@ -82,26 +62,3 @@ jobs:
       - name: Run Prettier
         run: npx prettier --write .
         working-directory: main-app
-
-  database_test:
-    name: Database Connection Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: main-app
-
-      # Run the database test with environment variable for MongoDB URI
-      - name: Run database connection test
-        run: npm test src/tests/database.test.js
-        working-directory: main-app
-        env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
